@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Top Matches 2026</title>
+    <meta name="description" content="Pick and rank your top 10 tennis matches of 2026." />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎾%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Top Matches <span class="year">2026</span></h1>
+      <p class="tagline">Pick the ten best matches of the season and put them in order.</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel picks" aria-labelledby="picks-title">
+        <div class="panel-head">
+          <h2 id="picks-title">Your top 10</h2>
+          <span class="count" id="pick-count">0 / 10</span>
+        </div>
+        <ol class="pick-list" id="pick-list"></ol>
+        <p class="empty" id="picks-empty">Nothing picked yet. Add matches from the list.</p>
+        <div class="actions">
+          <button type="button" id="share-btn">Copy share link</button>
+          <button type="button" id="copy-text-btn">Copy as text</button>
+          <button type="button" id="clear-btn" class="ghost">Clear</button>
+        </div>
+        <p class="toast" id="toast" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel catalog" aria-labelledby="catalog-title">
+        <div class="panel-head">
+          <h2 id="catalog-title">Matches</h2>
+        </div>
+        <div class="filters">
+          <input type="search" id="search" placeholder="Search players or events" aria-label="Search matches" />
+          <div class="segmented" role="group" aria-label="Tour">
+            <button type="button" data-tour="all" class="active">All</button>
+            <button type="button" data-tour="ATP">ATP</button>
+            <button type="button" data-tour="WTA">WTA</button>
+          </div>
+        </div>
+        <ul class="match-list" id="match-list"></ul>
+
+        <details class="add-custom">
+          <summary>Add a match that isn't listed</summary>
+          <form id="custom-form">
+            <div class="grid">
+              <label>Winner <input name="winner" required /></label>
+              <label>Loser <input name="loser" required /></label>
+              <label>Event <input name="event" required placeholder="e.g. Shanghai" /></label>
+              <label>Round <input name="round" placeholder="e.g. Final" /></label>
+              <label>Score <input name="score" placeholder="e.g. 6–4, 3–6, 7–6(5)" /></label>
+              <label
+                >Tour
+                <select name="tour">
+                  <option>ATP</option>
+                  <option>WTA</option>
+                </select>
+              </label>
+            </div>
+            <button type="submit">Add match</button>
+          </form>
+        </details>
+      </section>
+    </main>
+
+    <footer class="site-footer">Picks are saved in this browser. Share a link to show someone your list.</footer>
+
+    <script src="matches.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
