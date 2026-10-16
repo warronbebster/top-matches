@@ -3,6 +3,7 @@
 
   const MAX_PICKS = 10;
   const STORAGE_KEY = "top-matches-2026";
+  const CONFIG = window.TOP_MATCHES_CONFIG || {};
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -13,6 +14,9 @@
     search: $("search"),
     toast: $("toast"),
     customForm: $("custom-form"),
+    submitForm: $("submit-form"),
+    submitName: $("submit-name"),
+    submitBtn: $("submit-btn"),
   };
 
   // ---------- state ----------
@@ -27,12 +31,23 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        return { picks: parsed.picks || [], custom: parsed.custom || [] };
+        return {
+          picks: parsed.picks || [],
+          custom: parsed.custom || [],
+          name: parsed.name || "",
+          clientId: parsed.clientId || newClientId(),
+          submitted: parsed.submitted || null,
+        };
       }
     } catch (e) {
       /* storage unavailable or corrupt: start fresh */
     }
-    return { picks: [], custom: [] };
+    return { picks: [], custom: [], name: "", clientId: newClientId(), submitted: null };
+  }
+
+  function newClientId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
   }
 
   function saveLocal() {
@@ -97,13 +112,14 @@
       banner.className = "banner";
       banner.innerHTML =
         '<span>You’re looking at a shared list.</span>' +
-        '<button type="button" data-act="adopt">Make it mine</button>' +
-        '<button type="button" class="ghost" data-act="leave">Back to my list</button>';
+        '<button type="button" class="btn btn-primary" data-act="adopt">Make it mine</button>' +
+        '<button type="button" class="link-btn" data-act="leave">Back to my list</button>';
       banner.addEventListener("click", (e) => {
         const act = e.target.dataset.act;
         if (act === "adopt") {
           const extra = shared.custom.filter((m) => !state.custom.some((c) => c.id === m.id));
-          state = { picks: shared.picks.slice(), custom: state.custom.concat(extra) };
+          state.picks = shared.picks.slice();
+          state.custom = state.custom.concat(extra);
           saveLocal();
           leaveShared();
           showToast("Saved as your list.");
@@ -140,6 +156,9 @@
     els.pickCount.textContent = `${v.picks.length} / ${MAX_PICKS}`;
     els.picksEmpty.hidden = v.picks.length > 0;
     document.querySelector(".actions").hidden = readOnly;
+    els.submitForm.hidden = readOnly;
+    els.submitBtn.disabled = !v.picks.length;
+    els.submitBtn.textContent = state.submitted ? "Resubmit" : "Submit";
 
     v.picks.forEach((id, i) => {
       const m = byId(id, v.custom);
@@ -159,9 +178,9 @@
           readOnly
             ? ""
             : `<div class="pick-controls">
-            <button type="button" class="icon" data-act="up" aria-label="Move up" ${i === 0 ? "disabled" : ""}>↑</button>
-            <button type="button" class="icon" data-act="down" aria-label="Move down" ${i === v.picks.length - 1 ? "disabled" : ""}>↓</button>
-            <button type="button" class="icon" data-act="remove" aria-label="Remove">✕</button>
+            <button type="button" class="icon-btn" data-act="up" aria-label="Move up" ${i === 0 ? "disabled" : ""}>↑</button>
+            <button type="button" class="icon-btn" data-act="down" aria-label="Move down" ${i === v.picks.length - 1 ? "disabled" : ""}>↓</button>
+            <button type="button" class="icon-btn" data-act="remove" aria-label="Remove">✕</button>
           </div>`
         }`;
       li.querySelector(".title").textContent = matchTitle(m);
@@ -202,7 +221,7 @@
           <div class="score"></div>
           <p class="note"></p>
         </div>
-        <button type="button" class="add" data-id="${m.id}"></button>`;
+        <button type="button" class="btn btn-outline add" data-id="${m.id}"></button>`;
       li.querySelector(".tour").textContent = m.tour;
       li.querySelector(".tour").classList.add(m.tour.toLowerCase());
       li.querySelector(".names").textContent = matchTitle(m);
@@ -252,10 +271,12 @@
     commit();
   }
 
-  function showToast(msg) {
+  function showToast(msg, opts) {
+    const o = opts || {};
     els.toast.textContent = msg;
+    els.toast.classList.toggle("error", !!o.error);
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (els.toast.textContent = ""), 2500);
+    if (!o.sticky) toastTimer = setTimeout(() => (els.toast.textContent = ""), 3000);
   }
 
   async function copy(text, okMsg) {
@@ -323,11 +344,11 @@
 
   els.search.addEventListener("input", renderCatalog);
 
-  document.querySelector(".segmented").addEventListener("click", (e) => {
+  document.querySelector(".tour-tabs").addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-tour]");
     if (!btn) return;
     tourFilter = btn.dataset.tour;
-    document.querySelectorAll(".segmented button").forEach((b) => b.classList.toggle("active", b === btn));
+    document.querySelectorAll(".tour-tabs button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
     renderCatalog();
   });
 
@@ -368,6 +389,63 @@
     els.customForm.reset();
     commit();
     showToast(state.picks.includes(m.id) ? "Added to your top 10." : "Added to the list.");
+  });
+
+  // ---------- submit ----------
+
+  els.submitName.value = state.name;
+  els.submitName.addEventListener("input", () => {
+    state.name = els.submitName.value;
+    saveLocal();
+  });
+
+  els.submitForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!state.picks.length) return showToast("Pick some matches first.", { error: true });
+    if (!CONFIG.submitUrl) {
+      return showToast("Submissions aren\u2019t switched on yet.", { error: true, sticky: true });
+    }
+
+    const payload = {
+      clientId: state.clientId,
+      name: els.submitName.value.trim(),
+      picks: state.picks.map((id, i) => {
+        const m = byId(id);
+        return {
+          rank: i + 1,
+          id: m.id,
+          tour: m.tour,
+          event: m.event,
+          round: m.round,
+          winner: m.winner,
+          loser: m.loser,
+          score: m.score,
+        };
+      }),
+    };
+
+    els.submitBtn.disabled = true;
+    els.submitBtn.textContent = "Sending\u2026";
+    try {
+      // text/plain keeps this a "simple" request, so Apps Script needs no CORS preflight.
+      const res = await fetch(CONFIG.submitUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) throw new Error(data.error || "HTTP " + res.status);
+      state.submitted = new Date().toISOString();
+      saveLocal();
+      showToast(
+        data.updated ? "Updated your submitted list." : "Submitted! You can resubmit any time to update it.",
+        { sticky: true }
+      );
+    } catch (err) {
+      showToast("Couldn\u2019t submit right now. Please try again.", { error: true, sticky: true });
+    } finally {
+      render();
+    }
   });
 
   window.addEventListener("hashchange", () => {
