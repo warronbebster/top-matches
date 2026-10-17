@@ -11,7 +11,6 @@
     pickCount: $("pick-count"),
     picksEmpty: $("picks-empty"),
     matchList: $("match-list"),
-    search: $("search"),
     toast: $("toast"),
     customForm: $("custom-form"),
     submitForm: $("submit-form"),
@@ -139,8 +138,17 @@
     return `${m.winner} d. ${m.loser}`;
   }
 
+  // Surnames keep a top-10 row to one line: "Alcaraz d. Zverev".
+  function surname(name) {
+    return name.trim().split(/\s+/).pop();
+  }
+
+  function shortTitle(m) {
+    return `${surname(m.winner)} d. ${surname(m.loser)}`;
+  }
+
   function matchMeta(m) {
-    return [m.event, m.round, m.month].filter(Boolean).join(" · ");
+    return [m.event, m.round].filter(Boolean).join(" · ");
   }
 
   const GRIP =
@@ -169,9 +177,8 @@
         ${readOnly ? "" : GRIP}
         <span class="rank">${i + 1}</span>
         <div class="pick-body">
-          <div class="title"></div>
+          <div class="pick-line"><span class="title"></span><span class="score"></span></div>
           <div class="meta"></div>
-          <div class="score"></div>
         </div>
         ${
           readOnly
@@ -182,7 +189,8 @@
             <button type="button" class="icon-btn" data-act="remove" aria-label="Remove">✕</button>
           </div>`
         }`;
-      li.querySelector(".title").textContent = matchTitle(m);
+      li.querySelector(".title").textContent = shortTitle(m);
+      li.querySelector(".title").title = matchTitle(m);
       li.querySelector(".meta").textContent = matchMeta(m);
       li.querySelector(".score").textContent = m.score || "";
       els.pickList.appendChild(li);
@@ -190,16 +198,11 @@
   }
 
   function renderCatalog() {
-    const q = els.search.value.trim().toLowerCase();
     const v = view();
     const full = state.picks.length >= MAX_PICKS;
     els.matchList.innerHTML = "";
 
-    const list = allMatches().filter((m) => {
-      if (tourFilter !== "all" && m.tour !== tourFilter) return false;
-      if (!q) return true;
-      return [m.winner, m.loser, m.event, m.round, m.note].join(" ").toLowerCase().includes(q);
-    });
+    const list = allMatches().filter((m) => tourFilter === "all" || m.tour === tourFilter);
 
     if (!list.length) {
       const li = document.createElement("li");
@@ -327,14 +330,6 @@
     } catch (e) {
       window.prompt("Copy this:", text);
     }
-  }
-
-  function asText() {
-    const lines = state.picks.map((id, i) => {
-      const m = byId(id);
-      return `${i + 1}. ${matchTitle(m)} ${m.score ? m.score + " " : ""}(${matchMeta(m)})`;
-    });
-    return ["My top tennis matches of 2026", ...lines].join("\n");
   }
 
   // ---------- events ----------
@@ -469,7 +464,6 @@
   window.addEventListener("pointerup", (e) => endDrag(e, false));
   window.addEventListener("pointercancel", (e) => endDrag(e, true));
 
-  els.search.addEventListener("input", renderCatalog);
 
   document.querySelector(".tour-tabs").addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-tour]");
@@ -483,11 +477,6 @@
     if (!state.picks.length) return showToast("Pick some matches first.");
     const url = location.origin + location.pathname + "#list=" + encodeShare();
     copy(url, "Share link copied.");
-  });
-
-  $("copy-text-btn").addEventListener("click", () => {
-    if (!state.picks.length) return showToast("Pick some matches first.");
-    copy(asText(), "List copied.");
   });
 
   $("clear-btn").addEventListener("click", () => {
@@ -505,7 +494,6 @@
       tour: f.get("tour"),
       event: f.get("event").trim(),
       round: f.get("round").trim(),
-      month: "",
       winner: f.get("winner").trim(),
       loser: f.get("loser").trim(),
       score: f.get("score").trim(),
