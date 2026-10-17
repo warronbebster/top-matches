@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Top Matches 2026</title>
+    <meta name="description" content="Pick and rank your top 10 tennis matches of 2026." />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎾%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&display=swap"
+    />
+    <!-- Same Adobe Fonts kit as served.bracket.tennis (obviously-narrow); only loads on domains the kit allows. -->
+    <link rel="stylesheet" href="https://use.typekit.net/vxt7obb.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="./" class="brand">Top Matches <span class="brand-year">2026</span></a>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <h1>2026 Matches<br />of the Year</h1>
+        <p class="lede">Pick the ten best matches of the season, put them in order, and send in your list.</p>
+      </section>
+
+      <div class="layout">
+        <section class="picks" aria-labelledby="picks-title">
+          <div class="section-head">
+            <h2 id="picks-title" class="display">Your top 10</h2>
+            <span class="count" id="pick-count">0 / 10</span>
+          </div>
+          <div class="card">
+            <ol class="pick-list" id="pick-list"></ol>
+            <p class="empty" id="picks-empty">Nothing picked yet. Add matches from the list.</p>
+          </div>
+
+          <form class="submit-form" id="submit-form">
+            <label class="field">
+              <span>Your name</span>
+              <input name="name" id="submit-name" maxlength="80" autocomplete="name" placeholder="So we know whose list it is" required />
+            </label>
+            <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
+          </form>
+          <p class="toast" id="toast" role="status" aria-live="polite"></p>
+
+          <div class="actions">
+            <button type="button" class="link-btn" id="share-btn">Copy share link</button>
+            <button type="button" class="link-btn" id="copy-text-btn">Copy as text</button>
+            <button type="button" class="link-btn muted" id="clear-btn">Clear</button>
+          </div>
+        </section>
+
+        <section class="catalog" aria-labelledby="catalog-title">
+          <div class="section-head">
+            <h2 id="catalog-title" class="display">Matches</h2>
+            <div class="tour-tabs" role="group" aria-label="Tour">
+              <button type="button" data-tour="all" aria-pressed="true">All</button>
+              <button type="button" data-tour="ATP" aria-pressed="false">ATP</button>
+              <button type="button" data-tour="WTA" aria-pressed="false">WTA</button>
+            </div>
+          </div>
+          <input type="search" id="search" class="search" placeholder="Search players or events" aria-label="Search matches" />
+          <ul class="match-list card" id="match-list"></ul>
+
+          <details class="add-custom">
+            <summary>Add a match that isn't listed</summary>
+            <form id="custom-form" class="card">
+              <div class="grid">
+                <label class="field"><span>Winner</span><input name="winner" required /></label>
+                <label class="field"><span>Loser</span><input name="loser" required /></label>
+                <label class="field"><span>Event</span><input name="event" required placeholder="e.g. Shanghai" /></label>
+                <label class="field"><span>Round</span><input name="round" placeholder="e.g. Final" /></label>
+                <label class="field"><span>Score</span><input name="score" placeholder="e.g. 6–4, 3–6, 7–6(5)" /></label>
+                <label class="field"
+                  ><span>Tour</span>
+                  <select name="tour">
+                    <option>ATP</option>
+                    <option>WTA</option>
+                  </select>
+                </label>
+              </div>
+              <button type="submit" class="btn btn-outline">Add match</button>
+            </form>
+          </details>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">Your picks are saved in this browser until you submit them.</footer>
+
+    <script src="config.js"></script>
+    <script src="matches.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
