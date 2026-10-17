@@ -197,19 +197,100 @@ a {
 }
 
 .pick {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 10px 12px 10px 6px;
+  background: var(--card);
   cursor: grab;
+  transition: margin 0.18s ease;
 }
 
-.pick.dragging {
-  opacity: 0.5;
+.grip {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 36px;
+  margin-right: -6px;
+  color: var(--served-cream-dark);
+  touch-action: none;
 }
 
-.pick.drop-target {
-  background: var(--served-accent-light);
+.grip svg {
+  fill: currentColor;
+}
+
+.pick:hover .grip {
+  color: var(--served-secondary);
+}
+
+/* The row left behind while its copy is being dragged. */
+.pick.drag-source {
+  background: var(--served-cream);
+}
+
+.pick.drag-source > * {
+  opacity: 0.25;
+}
+
+/* The floating copy that follows the pointer. */
+.drag-clone {
+  position: fixed;
+  z-index: 1000;
+  margin: 0;
+  list-style: none;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--served-cream-dark), 0 16px 32px rgba(0, 0, 0, 0.18), 0 3px 8px rgba(0, 0, 0, 0.08);
+  transform: scale(1.02);
+  pointer-events: none;
+  cursor: grabbing;
+}
+
+body.is-dragging,
+body.is-dragging * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+/* Drop marker: the gap between two rows opens up and lights up. */
+.pick.gap-before {
+  margin-top: 16px;
+}
+
+.pick.gap-after {
+  margin-bottom: 16px;
+}
+
+/* Drawn above the floating copy so it stays visible under the pointer. */
+.drop-line {
+  position: fixed;
+  z-index: 1001;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 2px;
+  background: var(--served-accent);
+  box-shadow: 0 0 0 3px rgba(235, 185, 63, 0.3);
+  pointer-events: none;
+  animation: drop-line 0.18s ease-out;
+}
+
+@keyframes drop-line {
+  from {
+    opacity: 0;
+    transform: scaleX(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pick {
+    transition: none;
+  }
+
+  .drop-line {
+    animation: none;
+  }
 }
 
 .rank {

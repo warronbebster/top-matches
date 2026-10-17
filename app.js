@@ -15,7 +15,7 @@
     toast: $("toast"),
     customForm: $("custom-form"),
     submitForm: $("submit-form"),
-    submitName: $("submit-name"),
+    submitEmail: $("submit-email"),
     submitBtn: $("submit-btn"),
   };
 
@@ -34,20 +34,14 @@
         return {
           picks: parsed.picks || [],
           custom: parsed.custom || [],
-          name: parsed.name || "",
-          clientId: parsed.clientId || newClientId(),
+          email: parsed.email || "",
           submitted: parsed.submitted || null,
         };
       }
     } catch (e) {
       /* storage unavailable or corrupt: start fresh */
     }
-    return { picks: [], custom: [], name: "", clientId: newClientId(), submitted: null };
-  }
-
-  function newClientId() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+    return { picks: [], custom: [], email: "", submitted: null };
   }
 
   function saveLocal() {
@@ -149,6 +143,11 @@
     return [m.event, m.round, m.month].filter(Boolean).join(" · ");
   }
 
+  const GRIP =
+    '<span class="grip" aria-hidden="true"><svg viewBox="0 0 10 16" width="10" height="16">' +
+    '<circle cx="2" cy="3" r="1.5"/><circle cx="8" cy="3" r="1.5"/><circle cx="2" cy="8" r="1.5"/>' +
+    '<circle cx="8" cy="8" r="1.5"/><circle cx="2" cy="13" r="1.5"/><circle cx="8" cy="13" r="1.5"/></svg></span>';
+
   function renderPicks() {
     const v = view();
     const readOnly = !!shared;
@@ -166,8 +165,8 @@
       const li = document.createElement("li");
       li.className = "pick";
       li.dataset.id = id;
-      li.draggable = !readOnly;
       li.innerHTML = `
+        ${readOnly ? "" : GRIP}
         <span class="rank">${i + 1}</span>
         <div class="pick-body">
           <div class="title"></div>
@@ -248,9 +247,51 @@
 
   // ---------- actions ----------
 
-  function commit() {
+  // ---------- motion (FLIP with the Web Animations API, no library) ----------
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Where each pick sits on screen right now, keyed by match id.
+  function snapshot() {
+    const rects = new Map();
+    els.pickList.querySelectorAll(".pick").forEach((li) => rects.set(li.dataset.id, li.getBoundingClientRect()));
+    return rects;
+  }
+
+  // After a re-render, slide each pick from its old spot to its new one.
+  // `liftedId` gets a shadow and rides above the others while it moves.
+  function playFlip(before, liftedId) {
+    if (reduceMotion.matches) return;
+    els.pickList.querySelectorAll(".pick").forEach((li) => {
+      const prev = before.get(li.dataset.id);
+      if (!prev) {
+        li.animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], {
+          duration: 220,
+          easing: "ease-out",
+        });
+        return;
+      }
+      const now = li.getBoundingClientRect();
+      const dx = prev.left - now.left;
+      const dy = prev.top - now.top;
+      if (!dx && !dy) return;
+      const lifted = li.dataset.id === liftedId;
+      const from = { transform: `translate(${dx}px, ${dy}px)` };
+      const to = { transform: "none" };
+      if (lifted) {
+        from.boxShadow = to.boxShadow = "0 10px 24px rgba(0, 0, 0, 0.16)";
+        li.style.zIndex = "2";
+      }
+      const anim = li.animate([from, to], { duration: 260, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" });
+      if (lifted) anim.onfinish = anim.oncancel = () => (li.style.zIndex = "");
+    });
+  }
+
+  function commit(before, liftedId) {
+    const rects = before || snapshot();
     saveLocal();
     render();
+    playFlip(rects, liftedId);
   }
 
   function addPick(id) {
@@ -264,11 +305,11 @@
     commit();
   }
 
-  function movePick(from, to) {
-    if (to < 0 || to >= state.picks.length || from === to) return;
+  function movePick(from, to, before) {
+    if (to < 0 || to >= state.picks.length) return;
     const [id] = state.picks.splice(from, 1);
     state.picks.splice(to, 0, id);
-    commit();
+    commit(before, id);
   }
 
   function showToast(msg, opts) {
@@ -315,32 +356,118 @@
     else if (btn.dataset.act === "remove") removePick(id);
   });
 
-  // Drag to reorder
-  let dragId = null;
-  els.pickList.addEventListener("dragstart", (e) => {
+  // Drag to reorder. Pointer events rather than native drag-and-drop, so the
+  // dragged card can be styled and it works with touch. Mouse drags from
+  // anywhere on a row; touch drags from the grip so the page still scrolls.
+  let drag = null;
+
+  els.pickList.addEventListener("pointerdown", (e) => {
+    if (shared || e.button !== 0 || e.target.closest("button")) return;
     const li = e.target.closest(".pick");
     if (!li) return;
-    dragId = li.dataset.id;
-    li.classList.add("dragging");
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", dragId);
+    const onGrip = !!e.target.closest(".grip");
+    if (e.pointerType !== "mouse" && !onGrip) return;
+    e.preventDefault(); // no text selection while dragging
+    drag = { li, id: li.dataset.id, pointerId: e.pointerId, x: e.clientX, y: e.clientY, active: false };
   });
-  els.pickList.addEventListener("dragover", (e) => {
-    if (!dragId) return;
-    e.preventDefault();
-    const over = e.target.closest(".pick");
-    els.pickList.querySelectorAll(".drop-target").forEach((n) => n.classList.remove("drop-target"));
-    if (over && over.dataset.id !== dragId) over.classList.add("drop-target");
+
+  function startDrag(e) {
+    const li = drag.li;
+    const r = li.getBoundingClientRect();
+    drag.items = Array.from(els.pickList.querySelectorAll(".pick"));
+    drag.from = drag.items.indexOf(li);
+    // Row midpoints in page coordinates, measured once so the opening gap
+    // doesn't move the targets out from under the pointer.
+    drag.mids = drag.items.map((n) => {
+      const b = n.getBoundingClientRect();
+      return b.top + window.scrollY + b.height / 2;
+    });
+    drag.offsetY = e.clientY - r.top;
+    drag.slot = null;
+
+    const clone = li.cloneNode(true);
+    clone.classList.add("drag-clone");
+    clone.style.width = r.width + "px";
+    clone.style.left = r.left + "px";
+    clone.style.top = r.top + "px";
+    document.body.appendChild(clone);
+    drag.clone = clone;
+
+    li.classList.add("drag-source");
+    document.body.classList.add("is-dragging");
+    drag.active = true;
+    placeLine();
+  }
+
+  // Keep the drop line centred in the opening gap (it moves while the gap
+  // animates open, so track it every frame).
+  function placeLine() {
+    if (!drag || !drag.active) return;
+    if (drag.slot === null) {
+      if (drag.line) drag.line = (drag.line.remove(), null);
+    } else {
+      if (!drag.line) {
+        drag.line = document.createElement("div");
+        drag.line.className = "drop-line";
+        document.body.appendChild(drag.line);
+      }
+      const n = drag.items.length;
+      const listRect = els.pickList.getBoundingClientRect();
+      const y =
+        drag.slot < n
+          ? drag.items[drag.slot].getBoundingClientRect().top - 8
+          : drag.items[n - 1].getBoundingClientRect().bottom + 8;
+      drag.line.style.top = y + "px";
+      drag.line.style.left = listRect.left + 8 + "px";
+      drag.line.style.width = listRect.width - 16 + "px";
+    }
+    requestAnimationFrame(placeLine);
+  }
+
+  function setSlot(slot) {
+    // Dropping right where it started is a no-op, so show no gap there.
+    if (slot === drag.from || slot === drag.from + 1) slot = null;
+    if (slot === drag.slot) return;
+    drag.slot = slot;
+    drag.items.forEach((n) => n.classList.remove("gap-before", "gap-after"));
+    // The floating copy shows the rank it would land at.
+    const to = slot === null ? drag.from : slot > drag.from ? slot - 1 : slot;
+    drag.clone.querySelector(".rank").textContent = to + 1;
+    if (slot === null) return;
+    if (slot < drag.items.length) drag.items[slot].classList.add("gap-before");
+    else drag.items[drag.items.length - 1].classList.add("gap-after");
+  }
+
+  window.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.pointerId) return;
+    if (!drag.active) {
+      if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
+      startDrag(e);
+    }
+    drag.clone.style.top = e.clientY - drag.offsetY + "px";
+    const y = e.clientY + window.scrollY;
+    setSlot(drag.mids.filter((m) => m < y).length);
+    if (e.clientY < 60) window.scrollBy(0, -12);
+    else if (e.clientY > window.innerHeight - 60) window.scrollBy(0, 12);
   });
-  els.pickList.addEventListener("drop", (e) => {
-    e.preventDefault();
-    const over = e.target.closest(".pick");
-    if (dragId && over) movePick(state.picks.indexOf(dragId), state.picks.indexOf(over.dataset.id));
-  });
-  els.pickList.addEventListener("dragend", () => {
-    dragId = null;
-    render();
-  });
+
+  function endDrag(e, cancelled) {
+    if (!drag || e.pointerId !== drag.pointerId) return;
+    const d = drag;
+    drag = null;
+    if (!d.active) return;
+    // The dropped card animates from wherever the floating copy was let go.
+    const before = snapshot();
+    before.set(d.id, d.clone.getBoundingClientRect());
+    d.clone.remove();
+    if (d.line) d.line.remove();
+    document.body.classList.remove("is-dragging");
+    const to = cancelled || d.slot === null ? d.from : d.slot > d.from ? d.slot - 1 : d.slot;
+    movePick(d.from, to, before);
+  }
+
+  window.addEventListener("pointerup", (e) => endDrag(e, false));
+  window.addEventListener("pointercancel", (e) => endDrag(e, true));
 
   els.search.addEventListener("input", renderCatalog);
 
@@ -393,9 +520,9 @@
 
   // ---------- submit ----------
 
-  els.submitName.value = state.name;
-  els.submitName.addEventListener("input", () => {
-    state.name = els.submitName.value;
+  els.submitEmail.value = state.email;
+  els.submitEmail.addEventListener("input", () => {
+    state.email = els.submitEmail.value;
     saveLocal();
   });
 
@@ -407,8 +534,7 @@
     }
 
     const payload = {
-      clientId: state.clientId,
-      name: els.submitName.value.trim(),
+      email: els.submitEmail.value.trim().toLowerCase(),
       picks: state.picks.map((id, i) => {
         const m = byId(id);
         return {
