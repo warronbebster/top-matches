@@ -19,7 +19,16 @@ No build step. Open `index.html` directly, or serve the folder:
 python3 -m http.server
 ```
 
-To host it, turn on GitHub Pages for the default branch (Settings → Pages → Deploy from a branch → `main` / root).
+## Hosting and PR previews
+
+GitHub Actions publish the site to the `gh-pages` branch:
+
+- Every push to `main` deploys to https://warronbebster.github.io/top-matches/.
+- Every pull request gets its own preview at `https://warronbebster.github.io/top-matches/pr-preview/pr-<number>/`, linked in a comment on the PR and removed when it closes.
+
+One-time setup: after the first workflow run creates the `gh-pages` branch, go to **Settings → Pages → Build and deployment → Deploy from a branch → `gh-pages` / `(root)`**.
+
+Previews use the same `config.js`, so a submission from a preview lands in the real sheet.
 
 ## Turning on submissions (Google Sheets)
 
