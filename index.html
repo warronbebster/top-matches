@@ -20,17 +20,13 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <a href="./" class="brand">Top Matches <span class="brand-year">2026</span></a>
-    </header>
-
     <main class="page">
-      <section class="hero">
-        <h1>2026 Matches<br />of the Year</h1>
-        <p class="lede">Pick the ten best matches of the season, put them in order, and send in your list.</p>
-      </section>
-
       <div class="layout">
+        <section class="hero">
+          <h1>2026 Matches<br />of the Year</h1>
+          <p class="lede">Pick the ten best matches of the season, put them in order, and send in your list.</p>
+        </section>
+
         <section class="picks" aria-labelledby="picks-title">
           <div class="section-head">
             <h2 id="picks-title" class="display">Your top 10</h2>
@@ -52,7 +48,6 @@
 
           <div class="actions">
             <button type="button" class="link-btn" id="share-btn">Copy share link</button>
-            <button type="button" class="link-btn" id="copy-text-btn">Copy as text</button>
             <button type="button" class="link-btn muted" id="clear-btn">Clear</button>
           </div>
         </section>
@@ -66,7 +61,6 @@
               <button type="button" data-tour="WTA" aria-pressed="false">WTA</button>
             </div>
           </div>
-          <input type="search" id="search" class="search" placeholder="Search players or events" aria-label="Search matches" />
           <ul class="match-list card" id="match-list"></ul>
 
           <details class="add-custom">
@@ -92,8 +86,6 @@
         </section>
       </div>
     </main>
-
-    <footer class="site-footer">Your picks are saved in this browser until you submit them.</footer>
 
     <script src="config.js"></script>
     <script src="matches.js"></script>

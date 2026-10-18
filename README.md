@@ -2,7 +2,7 @@
 
 A small static site for picking and ranking your top 10 tennis matches of 2026.
 
-- Browse a seeded list of notable ATP and WTA matches, filter by tour, and search by player or event.
+- Browse a seeded list of notable ATP and WTA matches and filter by tour.
 - Add up to 10 matches, then reorder them by dragging or with the arrow buttons.
 - Add any match that isn't in the list.
 - Picks are saved in your browser (localStorage).

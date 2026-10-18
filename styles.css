@@ -59,40 +59,12 @@ a {
   color: inherit;
 }
 
-/* ---------- header ---------- */
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  background: var(--served-cream);
-  border-bottom: 1px solid var(--served-faded);
-}
-
-.brand {
-  font-family: var(--font-display);
-  font-size: 30px;
-  line-height: 1;
-  padding-top: 4px;
-  color: var(--served-primary);
-  text-decoration: none;
-  text-shadow: 1px 1px 0 var(--served-accent);
-}
-
-.brand:hover {
-  color: var(--served-accent);
-}
-
 /* ---------- page ---------- */
 
 .page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 64px 24px 48px;
+  padding: 48px 24px;
 }
 
 @media (max-width: 640px) {
@@ -102,8 +74,8 @@ a {
 }
 
 .hero {
+  grid-area: hero;
   max-width: 560px;
-  margin-bottom: 56px;
 }
 
 .hero h1 {
@@ -128,28 +100,42 @@ a {
   line-height: 30px;
 }
 
+/* Desktop: title then matches on the left, top 10 pinned on the right.
+   Phone: title, top 10, then matches. */
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: 48px;
-  align-items: start;
+  grid-template-columns: minmax(0, 13fr) minmax(0, 11fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "hero picks"
+    "catalog picks";
+  gap: 40px 48px;
+}
+
+.catalog {
+  grid-area: catalog;
+}
+
+.picks {
+  grid-area: picks;
+  align-self: start;
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
 }
 
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 40px;
+    grid-template-rows: none;
+    grid-template-areas: "hero" "picks" "catalog";
   }
-}
 
-.picks {
-  position: sticky;
-  top: 72px;
-}
-
-@media (max-width: 900px) {
   .picks {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -200,8 +186,8 @@ a {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px 10px 6px;
+  gap: 10px;
+  padding: 6px 8px 6px 4px;
   background: var(--card);
   cursor: grab;
   transition: margin 0.18s ease;
@@ -295,10 +281,10 @@ body.is-dragging * {
 
 .rank {
   flex: none;
-  width: 32px;
+  width: 28px;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1;
   padding-top: 4px;
   color: var(--served-primary);
@@ -327,6 +313,28 @@ body.is-dragging * {
 .score {
   font-size: 15px;
   font-variant-numeric: tabular-nums;
+}
+
+.pick-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
+.pick .title {
+  font-size: 16px;
+}
+
+.pick .score {
+  font-size: 14px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.pick .meta {
+  font-size: 13px;
+  line-height: 1.3;
 }
 
 .pick-controls {
@@ -518,7 +526,6 @@ a:focus-visible {
 
 /* ---------- forms ---------- */
 
-.search,
 .field input,
 .field select {
   width: 100%;
@@ -526,10 +533,6 @@ a:focus-visible {
   border: 1px solid var(--served-cream-dark);
   border-radius: 6px;
   background: var(--card);
-}
-
-.search {
-  margin-bottom: 12px;
 }
 
 .field {
@@ -623,10 +626,3 @@ a:focus-visible {
   padding: 11px 16px 8px;
 }
 
-.site-footer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px 48px;
-  color: var(--served-secondary);
-  font-size: 14px;
-}
