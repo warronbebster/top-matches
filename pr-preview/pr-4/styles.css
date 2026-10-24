@@ -133,8 +133,14 @@ a {
   .layout {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
-    grid-template-areas: "hero" "tabs" "picks" "catalog";
+    grid-template-areas: "hero" "tabs" "view";
     gap: 20px;
+  }
+
+  /* Only one of these shows at a time, so they share a row. */
+  .picks,
+  .catalog {
+    grid-area: view;
   }
 
   .picks {
@@ -393,13 +399,12 @@ body.is-dragging * {
   font-variant-numeric: tabular-nums;
 }
 
-/* Players on the left, event · round on the right, score underneath. */
+/* Players, then event · round right beside them, score underneath. */
 .row-top {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0 12px;
+  gap: 0 10px;
 }
 
 /* On narrow rows the event drops under the players rather than squeezing them. */
@@ -467,27 +472,8 @@ body.is-dragging * {
   background: color-mix(in srgb, var(--served-accent-light) 35%, white);
 }
 
-.match .title {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
-  min-width: 0;
-}
-
 .match .score {
   margin-top: 2px;
-}
-
-.tour {
-  flex: none;
-  align-self: center;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: var(--served-cream);
-  color: var(--served-primary);
 }
 
 .note {

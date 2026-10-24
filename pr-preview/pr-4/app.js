@@ -200,16 +200,14 @@
       li.innerHTML = `
         <div class="match-body">
           <div class="row-top">
-            <span class="title"><span class="tour"></span><span class="names"></span></span>
+            <span class="title"></span>
             <span class="meta"></span>
           </div>
           <div class="score"></div>
           <p class="note"></p>
         </div>
         <button type="button" class="btn btn-outline add" data-id="${m.id}"></button>`;
-      li.querySelector(".tour").textContent = m.tour;
-      li.querySelector(".tour").classList.add(m.tour.toLowerCase());
-      li.querySelector(".names").textContent = matchTitle(m);
+      li.querySelector(".title").textContent = matchTitle(m);
       li.querySelector(".meta").textContent = matchMeta(m);
       li.querySelector(".score").textContent = m.score || "";
       li.querySelector(".note").textContent = m.note || "";
