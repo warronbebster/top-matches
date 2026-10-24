@@ -462,7 +462,7 @@ body.is-dragging * {
 
 .meta {
   color: var(--served-secondary);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .score {
