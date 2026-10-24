@@ -420,17 +420,16 @@ body.is-dragging * {
 }
 
 .score .highlights {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   color: var(--served-primary);
   text-underline-offset: 2px;
 }
 
+/* Sized to the cap height and sitting on the baseline, level with the "H". */
 .highlights svg {
-  flex: none;
+  height: 0.7em;
   width: 1em;
-  height: 1em;
+  margin-right: 5px;
+  vertical-align: baseline;
   fill: currentColor;
 }
 

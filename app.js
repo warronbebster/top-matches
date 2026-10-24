@@ -171,8 +171,9 @@
     a.href = m.highlights;
     a.target = "_blank";
     a.rel = "noopener";
+    // YouTube's logo shape, with the play triangle cut out so the card shows through.
     a.innerHTML =
-      '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM6 4.5l5.5 3.5L6 11.5z"/></svg>Highlights';
+      '<svg viewBox="0 0 28.57 20" aria-hidden="true"><path fill-rule="evenodd" d="M27.97 3.12A3.58 3.58 0 0 0 25.45.6C23.22 0 14.29 0 14.29 0S5.35 0 3.12.6A3.58 3.58 0 0 0 .6 3.12C0 5.35 0 10 0 10s0 4.65.6 6.88a3.58 3.58 0 0 0 2.52 2.52c2.23.6 11.17.6 11.17.6s8.93 0 11.16-.6a3.58 3.58 0 0 0 2.52-2.52c.6-2.23.6-6.88.6-6.88s0-4.65-.6-6.88zM11.43 14.29L18.85 10l-7.42-4.29z"/></svg>Highlights';
     el.append(a);
   }
 
