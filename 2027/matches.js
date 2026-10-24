@@ -1,6 +1,7 @@
 // The shortlist of 2026 matches to rank, in the order Barron sent it.
 // Scores are from the winner's side; a tiebreak shows the loser's points in parentheses.
 // Details checked against tournament and press coverage, October 2026.
+// `highlights` links to a YouTube highlights video, usually from the event's own channel.
 window.SEED_MATCHES = [
   {
     id: "uso-3r-jovic-eala",
@@ -12,6 +13,7 @@ window.SEED_MATCHES = [
     loser: "Alexandra Eala",
     score: "7–5, 3–6, 7–5",
     note: "Over three hours on Ashe; Eala saved a match point before Jovic closed it two games later.",
+    highlights: "https://www.youtube.com/watch?v=lH0PXoilPgk",
   },
   {
     id: "uso-qf-shelton-alcaraz",
@@ -23,6 +25,7 @@ window.SEED_MATCHES = [
     loser: "Carlos Alcaraz",
     score: "6–7(5), 6–1, 6–3, 1–6, 7–6(7)",
     note: "The latest finish in US Open history, ending the defending champion's 18-match Grand Slam run.",
+    highlights: "https://www.youtube.com/watch?v=wYd7I5_tMEs",
   },
   {
     id: "rg-3r-fonseca-djokovic",
@@ -34,6 +37,7 @@ window.SEED_MATCHES = [
     loser: "Novak Djokovic",
     score: "4–6, 4–6, 6–3, 7–5, 7–5",
     note: "The 19-year-old comes back from two sets down against Djokovic.",
+    highlights: "https://www.youtube.com/watch?v=6ypwefm8yCw",
   },
   {
     id: "ao-sf-djokovic-sinner",
@@ -45,6 +49,7 @@ window.SEED_MATCHES = [
     loser: "Jannik Sinner",
     score: "3–6, 6–3, 4–6, 6–4, 6–4",
     note: "Djokovic saved 16 break points to beat the two-time defending champion.",
+    highlights: "https://www.youtube.com/watch?v=IiWYmh3aRhI",
   },
   {
     id: "ao-sf-alcaraz-zverev",
@@ -56,6 +61,7 @@ window.SEED_MATCHES = [
     loser: "Alexander Zverev",
     score: "6–4, 7–6(5), 6–7(3), 6–7(4), 7–5",
     note: "5 hours 27 minutes through cramps, the longest semifinal in Melbourne history.",
+    highlights: "https://www.youtube.com/watch?v=u8plp_Kb6Ss",
   },
   {
     id: "wim-3r-eala-swiatek",
@@ -67,6 +73,7 @@ window.SEED_MATCHES = [
     loser: "Iga Świątek",
     score: "7–6(9), 6–2",
     note: "Eala saved two set points in the tiebreak and knocked out the defending champion.",
+    highlights: "https://www.youtube.com/watch?v=KUVh-Jflv_Q",
   },
   {
     id: "wim-qf-djokovic-auger-aliassime",
@@ -78,6 +85,7 @@ window.SEED_MATCHES = [
     loser: "Félix Auger-Aliassime",
     score: "7–6(10), 3–6, 6–3, 6–7(4), 7–6(4)",
     note: "Three tiebreaks, the last one deciding the fifth set.",
+    highlights: "https://www.youtube.com/watch?v=axZBhY0QFEU",
   },
   {
     id: "uso-qf-tiafoe-michelsen",
@@ -89,6 +97,7 @@ window.SEED_MATCHES = [
     loser: "Alex Michelsen",
     score: "5–7, 3–6, 7–5, 6–3, 7–6(6)",
     note: "Back from two sets and 0–3 in the fifth down to reach his third US Open semifinal.",
+    highlights: "https://www.youtube.com/watch?v=J1ljGoL7be0",
   },
   {
     id: "rg-f-zverev-cobolli",
@@ -100,6 +109,7 @@ window.SEED_MATCHES = [
     loser: "Flavio Cobolli",
     score: "6–1, 4–6, 6–4, 6–7(5), 6–1",
     note: "Zverev finally wins a Grand Slam title, in five sets.",
+    highlights: "https://www.youtube.com/watch?v=WfxpIK_TvEQ",
   },
   {
     id: "iw-4r-draper-djokovic",
@@ -111,6 +121,7 @@ window.SEED_MATCHES = [
     loser: "Novak Djokovic",
     score: "4–6, 6–4, 7–6(5)",
     note: "The defending champion wins a final-set tiebreak after Djokovic broke back at 5–4.",
+    highlights: "https://www.youtube.com/watch?v=-pSIqoqePeg",
   },
   {
     id: "uso-exh-federer-roddick",
@@ -122,6 +133,7 @@ window.SEED_MATCHES = [
     loser: "Andy Roddick",
     score: "6–3",
     note: "A one-set exhibition on Ashe as Federer, 45, returned to New York.",
+    highlights: "https://www.youtube.com/watch?v=fPAC0c74oSA",
   },
   {
     id: "rg-wsf-chwalinska-shnaider",
@@ -133,6 +145,7 @@ window.SEED_MATCHES = [
     loser: "Diana Shnaider",
     score: "7–6(4), 6–4",
     note: "The first qualifier ever to reach the Roland Garros final.",
+    highlights: "https://www.youtube.com/watch?v=cfHeYAm0GuA",
   },
   {
     id: "rome-sf-sinner-medvedev",
@@ -144,6 +157,7 @@ window.SEED_MATCHES = [
     loser: "Daniil Medvedev",
     score: "6–2, 5–7, 6–4",
     note: "Finished after a rain suspension, sending Sinner to a sixth straight Masters 1000 final.",
+    highlights: "https://www.youtube.com/watch?v=7B9y5ctPyRo",
   },
   {
     id: "ao-wf-rybakina-sabalenka",
@@ -155,6 +169,7 @@ window.SEED_MATCHES = [
     loser: "Aryna Sabalenka",
     score: "6–4, 4–6, 6–4",
     note: "Rybakina's first title in Melbourne.",
+    highlights: "https://www.youtube.com/watch?v=7CeEeluu9Q4",
   },
   {
     id: "rg-4r-arnaldi-tiafoe",
@@ -166,6 +181,7 @@ window.SEED_MATCHES = [
     loser: "Frances Tiafoe",
     score: "7–6(5), 6–7(5), 3–6, 7–6(3), 6–4",
     note: "5 hours 26 minutes, back from two breaks down in the fourth to reach his first major quarterfinal.",
+    highlights: "https://www.youtube.com/watch?v=kxhSEAEmNAQ",
   },
   {
     id: "uso-wf-rybakina-sabalenka",
@@ -177,6 +193,7 @@ window.SEED_MATCHES = [
     loser: "Aryna Sabalenka",
     score: "6–4, 5–7, 6–2",
     note: "Rybakina's second major of the year, over the two-time defending champion.",
+    highlights: "https://www.youtube.com/watch?v=YCAQnmJBJIk",
   },
   {
     id: "beijing-qf-djokovic-zverev",
@@ -188,6 +205,7 @@ window.SEED_MATCHES = [
     loser: "Alexander Zverev",
     score: "4–6, 6–4, 6–4",
     note: "Djokovic goes 32–0 in Beijing, beating the world No. 1 at 39.",
+    highlights: "https://www.youtube.com/watch?v=rOCVy6qP724",
   },
   {
     id: "uso-3r-zheng-keys",
@@ -199,6 +217,7 @@ window.SEED_MATCHES = [
     loser: "Madison Keys",
     score: "1–6, 7–6(3), 7–5",
     note: "Back from 0–5 and a match point down in the third, winning the last seven games.",
+    highlights: "https://www.youtube.com/watch?v=PiuDtMWKU2g",
   },
   {
     id: "uso-f-zverev-shelton",
@@ -210,6 +229,7 @@ window.SEED_MATCHES = [
     loser: "Ben Shelton",
     score: "6–3, 7–6(2), 5–7, 6–2",
     note: "Zverev adds a second major in New York.",
+    highlights: "https://www.youtube.com/watch?v=hY1epQDmhGQ",
   },
   {
     id: "madrid-wqf-baptiste-sabalenka",
@@ -221,6 +241,7 @@ window.SEED_MATCHES = [
     loser: "Aryna Sabalenka",
     score: "2–6, 6–2, 7–6(6)",
     note: "Saved six match points for her first top-5 win, ending Sabalenka's 15-match streak.",
+    highlights: "https://www.youtube.com/watch?v=5dJSS-Vb-Ts",
   },
   {
     id: "wim-1r-berrettini-wawrinka",
@@ -232,5 +253,6 @@ window.SEED_MATCHES = [
     loser: "Stan Wawrinka",
     score: "6–7(7), 7–6(16), 7–6(7), 7–6(5)",
     note: "Four tiebreak sets, including 18–16 in the second, in Wawrinka's final Wimbledon.",
+    highlights: "https://www.youtube.com/watch?v=8AaMeFTeskY",
   },
 ];

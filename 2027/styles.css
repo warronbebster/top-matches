@@ -407,9 +407,66 @@ body.is-dragging * {
   overflow-wrap: anywhere;
 }
 
+.score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+}
+
+.score-text,
+.score .highlights {
+  white-space: nowrap;
+}
+
+/* A fixed offset and thickness, with no gaps cut for descenders, so the
+   underline looks the same on every row whatever its pixel rounding. */
+.score .highlights {
+  color: var(--served-primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-skip-ink: none;
+}
+
+/* Sized to the cap height and sitting on the baseline, level with the "H". */
+.highlights svg {
+  height: 0.7em;
+  width: 1em;
+  margin-right: 5px;
+  vertical-align: baseline;
+  fill: currentColor;
+}
+
+/* A base letter with a Latin-1 accent laid over it (see nameHtml in app.js). */
+.dia {
+  position: relative;
+  display: inline-block;
+}
+
+.dia::after {
+  content: attr(data-mark);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dia.acute.cap::after {
+  top: -0.2em;
+}
+
+/* A mirrored cedilla stands in for the ogonek. */
+.dia.ogonek::after {
+  top: 0.04em;
+  left: 0.32em;
+  transform: scaleX(-1);
+}
+
 .meta {
   color: var(--served-secondary);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .score {
@@ -448,7 +505,6 @@ body.is-dragging * {
 .pick-controls {
   flex: none;
   display: flex;
-  gap: 2px;
 }
 
 .icon-btn {
