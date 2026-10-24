@@ -12,7 +12,7 @@
     picksEmpty: $("picks-empty"),
     matchList: $("match-list"),
     toast: $("toast"),
-    customForm: $("custom-form"),
+    tabCount: $("tab-count"),
     submitForm: $("submit-form"),
     submitEmail: $("submit-email"),
     submitBtn: $("submit-btn"),
@@ -22,7 +22,6 @@
 
   let state = loadLocal();
   let shared = readShareHash(); // non-null while viewing someone's shared list
-  let tourFilter = "all";
   let toastTimer;
 
   function loadLocal() {
@@ -31,8 +30,8 @@
       if (raw) {
         const parsed = JSON.parse(raw);
         return {
-          picks: parsed.picks || [],
-          custom: parsed.custom || [],
+          // Drops any old hand-added matches, which the page no longer has.
+          picks: (parsed.picks || []).filter((id) => byId(id)),
           email: parsed.email || "",
           submitted: parsed.submitted || null,
         };
@@ -40,7 +39,7 @@
     } catch (e) {
       /* storage unavailable or corrupt: start fresh */
     }
-    return { picks: [], custom: [], email: "", submitted: null };
+    return { picks: [], email: "", submitted: null };
   }
 
   function saveLocal() {
@@ -51,19 +50,14 @@
     }
   }
 
-  function allMatches(custom) {
-    return window.SEED_MATCHES.concat(custom || state.custom);
-  }
-
-  function byId(id, custom) {
-    return allMatches(custom).find((m) => m.id === id);
+  function byId(id) {
+    return window.SEED_MATCHES.find((m) => m.id === id);
   }
 
   // ---------- share links ----------
 
   function encodeShare() {
-    const custom = state.custom.filter((m) => state.picks.includes(m.id));
-    const json = JSON.stringify({ p: state.picks, c: custom });
+    const json = JSON.stringify({ p: state.picks });
     const b64 = btoa(unescape(encodeURIComponent(json)));
     return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
@@ -75,11 +69,8 @@
       const b64 = m[1].replace(/-/g, "+").replace(/_/g, "/");
       const json = decodeURIComponent(escape(atob(b64)));
       const data = JSON.parse(json);
-      const custom = Array.isArray(data.c) ? data.c : [];
-      const picks = (Array.isArray(data.p) ? data.p : [])
-        .filter((id) => byId(id, custom))
-        .slice(0, MAX_PICKS);
-      return { picks, custom };
+      const picks = (Array.isArray(data.p) ? data.p : []).filter((id) => byId(id)).slice(0, MAX_PICKS);
+      return { picks };
     } catch (e) {
       return null;
     }
@@ -110,9 +101,7 @@
       banner.addEventListener("click", (e) => {
         const act = e.target.dataset.act;
         if (act === "adopt") {
-          const extra = shared.custom.filter((m) => !state.custom.some((c) => c.id === m.id));
           state.picks = shared.picks.slice();
-          state.custom = state.custom.concat(extra);
           saveLocal();
           leaveShared();
           showToast("Saved as your list.");
@@ -161,6 +150,8 @@
     const readOnly = !!shared;
     els.pickList.innerHTML = "";
     els.pickCount.textContent = `${v.picks.length} / ${MAX_PICKS}`;
+    els.tabCount.textContent = v.picks.length;
+    $("clear-btn").hidden = readOnly || !v.picks.length;
     els.picksEmpty.hidden = v.picks.length > 0;
     document.querySelector(".actions").hidden = readOnly;
     els.submitForm.hidden = readOnly;
@@ -168,7 +159,7 @@
     els.submitBtn.textContent = state.submitted ? "Resubmit" : "Submit";
 
     v.picks.forEach((id, i) => {
-      const m = byId(id, v.custom);
+      const m = byId(id);
       if (!m) return;
       const li = document.createElement("li");
       li.className = "pick";
@@ -177,8 +168,8 @@
         ${readOnly ? "" : GRIP}
         <span class="rank">${i + 1}</span>
         <div class="pick-body">
-          <div class="pick-line"><span class="title"></span><span class="score"></span></div>
-          <div class="meta"></div>
+          <div class="row-top"><span class="title"></span><span class="meta"></span></div>
+          <div class="score"></div>
         </div>
         ${
           readOnly
@@ -202,24 +193,16 @@
     const full = state.picks.length >= MAX_PICKS;
     els.matchList.innerHTML = "";
 
-    const list = allMatches().filter((m) => tourFilter === "all" || m.tour === tourFilter);
-
-    if (!list.length) {
-      const li = document.createElement("li");
-      li.className = "empty";
-      li.textContent = "No matches found.";
-      els.matchList.appendChild(li);
-      return;
-    }
-
-    list.forEach((m) => {
+    window.SEED_MATCHES.forEach((m) => {
       const picked = v.picks.includes(m.id);
       const li = document.createElement("li");
       li.className = "match" + (picked ? " picked" : "");
       li.innerHTML = `
         <div class="match-body">
-          <div class="title"><span class="tour"></span><span class="names"></span></div>
-          <div class="meta"></div>
+          <div class="row-top">
+            <span class="title"><span class="tour"></span><span class="names"></span></span>
+            <span class="meta"></span>
+          </div>
           <div class="score"></div>
           <p class="note"></p>
         </div>
@@ -464,13 +447,17 @@
   window.addEventListener("pointerup", (e) => endDrag(e, false));
   window.addEventListener("pointercancel", (e) => endDrag(e, true));
 
+  // Phone layout: the match list and the top 10 sit behind two tabs.
+  function showTab(tab) {
+    document.body.dataset.tab = tab;
+    document.querySelectorAll(".view-tabs [data-tab]").forEach((b) =>
+      b.setAttribute("aria-selected", String(b.dataset.tab === tab))
+    );
+  }
 
-  document.querySelector(".tour-tabs").addEventListener("click", (e) => {
-    const btn = e.target.closest("button[data-tour]");
-    if (!btn) return;
-    tourFilter = btn.dataset.tour;
-    document.querySelectorAll(".tour-tabs button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
-    renderCatalog();
+  document.querySelector(".view-tabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-tab]");
+    if (btn) showTab(btn.dataset.tab);
   });
 
   $("share-btn").addEventListener("click", () => {
@@ -484,26 +471,6 @@
     if (!confirm("Clear your top 10?")) return;
     state.picks = [];
     commit();
-  });
-
-  els.customForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const f = new FormData(els.customForm);
-    const m = {
-      id: "custom-" + Date.now().toString(36),
-      tour: f.get("tour"),
-      event: f.get("event").trim(),
-      round: f.get("round").trim(),
-      winner: f.get("winner").trim(),
-      loser: f.get("loser").trim(),
-      score: f.get("score").trim(),
-      note: "Added by you.",
-    };
-    state.custom.push(m);
-    if (state.picks.length < MAX_PICKS) state.picks.push(m.id);
-    els.customForm.reset();
-    commit();
-    showToast(state.picks.includes(m.id) ? "Added to your top 10." : "Added to the list.");
   });
 
   // ---------- submit ----------
@@ -564,8 +531,10 @@
 
   window.addEventListener("hashchange", () => {
     shared = readShareHash();
+    if (shared) showTab("picks");
     render();
   });
 
+  showTab(shared ? "picks" : "catalog");
   render();
 })();
