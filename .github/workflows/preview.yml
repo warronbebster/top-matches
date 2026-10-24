@@ -1,5 +1,5 @@
 # Publishes each pull request to
-# https://<owner>.github.io/<repo>/pr-preview/pr-<number>/
+# https://served.tennis/pr-preview/pr-<number>/
 # and comments the link on the PR. The preview is removed when the PR closes.
 name: PR preview
 
@@ -23,3 +23,4 @@ jobs:
       - uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: .
+          pages-base-url: served.tennis
