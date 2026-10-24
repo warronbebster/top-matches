@@ -101,7 +101,7 @@ a {
 }
 
 /* Desktop: title then matches on the left, top 10 pinned on the right.
-   Phone: title, top 10, then matches. */
+   Phone: title, then tabs that switch between the matches and the top 10. */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 13fr) minmax(0, 11fr);
@@ -109,7 +109,11 @@ a {
   grid-template-areas:
     "hero picks"
     "catalog picks";
-  gap: 40px 48px;
+  gap: 32px 48px;
+}
+
+.view-tabs {
+  display: none;
 }
 
 .catalog {
@@ -129,13 +133,77 @@ a {
   .layout {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
-    grid-template-areas: "hero" "picks" "catalog";
+    grid-template-areas: "hero" "tabs" "picks" "catalog";
+    gap: 20px;
   }
 
   .picks {
     position: static;
     max-height: none;
     overflow: visible;
+  }
+
+  .view-tabs {
+    grid-area: tabs;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    gap: 4px;
+    margin: 0 -16px;
+    padding: 8px 16px;
+    background: var(--served-cream);
+    border-bottom: 1px solid var(--served-cream-dark);
+  }
+
+  .view-tabs button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 8px 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: 24px;
+    line-height: 1;
+    color: var(--served-primary);
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .view-tabs button[aria-selected="true"] {
+    background: var(--card);
+    opacity: 1;
+    box-shadow: 0 0 0 1px var(--served-cream-dark);
+  }
+
+  .tab-count {
+    min-width: 22px;
+    padding: 3px 6px 1px;
+    border-radius: 999px;
+    background: var(--served-accent);
+    color: #000;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  body:not([data-tab="picks"]) .picks,
+  body[data-tab="picks"] .catalog {
+    display: none;
+  }
+
+  /* The tab already says "My top 10". */
+  .picks .display {
+    display: none;
+  }
+
+  .picks .section-head {
+    justify-content: flex-end;
   }
 }
 
@@ -145,6 +213,16 @@ a {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 12px;
+}
+
+.head-tools {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.head-tools .link-btn {
+  font-size: 16px;
 }
 
 .display {
@@ -187,7 +265,7 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 8px 6px 4px;
+  padding: 8px 8px 8px 4px;
   background: var(--card);
   cursor: grab;
   transition: margin 0.18s ease;
@@ -315,11 +393,19 @@ body.is-dragging * {
   font-variant-numeric: tabular-nums;
 }
 
-.pick-line {
+/* Players on the left, event · round on the right, score underneath. */
+.row-top {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+
+/* On narrow rows the event drops under the players rather than squeezing them. */
+.row-top .meta {
+  flex: none;
+  white-space: nowrap;
 }
 
 .pick .title {
@@ -328,13 +414,12 @@ body.is-dragging * {
 
 .pick .score {
   font-size: 14px;
+  line-height: 1.3;
   color: var(--muted);
-  white-space: nowrap;
 }
 
 .pick .meta {
   font-size: 13px;
-  line-height: 1.3;
 }
 
 .pick-controls {
@@ -373,9 +458,9 @@ body.is-dragging * {
 
 .match {
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  padding: 14px 12px;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 12px 12px 16px;
 }
 
 .match.picked {
@@ -386,10 +471,16 @@ body.is-dragging * {
   display: flex;
   gap: 8px;
   align-items: baseline;
-  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.match .score {
+  margin-top: 2px;
 }
 
 .tour {
+  flex: none;
+  align-self: center;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -402,6 +493,7 @@ body.is-dragging * {
 .note {
   margin: 4px 0 0;
   font-size: 15px;
+  line-height: 1.35;
   color: var(--muted);
 }
 
@@ -490,38 +582,9 @@ button.add.ranked:hover {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-summary:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--served-primary);
   outline-offset: 2px;
-}
-
-/* ---------- tour tabs (like the served slam switcher) ---------- */
-
-.tour-tabs {
-  display: flex;
-  gap: 16px;
-}
-
-.tour-tabs button {
-  border: 0;
-  background: none;
-  padding: 0;
-  font-family: var(--font-display);
-  font-size: 28px;
-  line-height: 1.1;
-  color: var(--served-primary);
-  opacity: 0.4;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-
-.tour-tabs button:hover {
-  opacity: 0.7;
-}
-
-.tour-tabs button[aria-pressed="true"] {
-  opacity: 1;
 }
 
 /* ---------- forms ---------- */
@@ -553,7 +616,17 @@ a:focus-visible {
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 16px;
+}
+
+/* Same height as the email box beside it. */
+.submit-form .field input,
+.submit-form .btn {
+  height: 46px;
+}
+
+.submit-form .btn {
+  padding: 4px 22px 0;
 }
 
 .submit-form .field {
@@ -576,30 +649,6 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  margin-top: 4px;
-}
-
-.add-custom {
-  margin-top: 20px;
-}
-
-.add-custom summary {
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--served-primary);
-}
-
-.add-custom form {
-  margin-top: 12px;
-  padding: 16px;
-}
-
-.add-custom .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
 }
 
 /* ---------- shared-list banner ---------- */

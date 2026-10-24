@@ -2,9 +2,9 @@
 
 A small static site for picking and ranking your top 10 tennis matches of 2026.
 
-- Browse a seeded list of notable ATP and WTA matches and filter by tour.
+- Browse the shortlist of 2026 matches in `matches.js`.
 - Add up to 10 matches, then reorder them by dragging or with the arrow buttons.
-- Add any match that isn't in the list.
+- On phones, tabs switch between the match list and "My top 10".
 - Picks are saved in your browser (localStorage).
 - "Submit" sends your email and ranked list to a Google Sheet. Resubmitting with the same email updates your row instead of adding a new one.
 - "Copy share link" puts your list in the URL so anyone can open it and save it as their own.
