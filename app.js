@@ -132,12 +132,65 @@
     return name.trim().split(/\s+/).pop();
   }
 
-  function shortTitle(m) {
-    return `${surname(m.winner)} d. ${surname(m.loser)}`;
+  // The body font (obviously-narrow) only covers Latin-1, so letters like
+  // ą, ń and Ś would fall back to another font. Build them from the base
+  // letter plus a Latin-1 accent drawn on top instead.
+  const MARKS = { "\u0301": ["´", "acute"], "\u0328": ["¸", "ogonek"] };
+
+  function escapeHtml(text) {
+    return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   }
 
+  function nameHtml(name) {
+    return Array.from(name)
+      .map((ch) => {
+        if (ch.charCodeAt(0) < 256) return escapeHtml(ch);
+        const [base, mark, extra] = Array.from(ch.normalize("NFD"));
+        const m = MARKS[mark];
+        if (!m || extra) return escapeHtml(ch);
+        const cap = base !== base.toLowerCase() ? " cap" : "";
+        return `<span class="dia ${m[1]}${cap}" data-mark="${m[0]}">${escapeHtml(base)}</span>`;
+      })
+      .join("");
+  }
+
+  function titleHtml(winner, loser) {
+    return `${nameHtml(winner)} d. ${nameHtml(loser)}`;
+  }
+
+  // Score, then a link to the match highlights when there is one.
+  function setScore(el, m) {
+    el.textContent = "";
+    const score = document.createElement("span");
+    score.className = "score-text";
+    score.textContent = m.score || "";
+    el.append(score);
+    if (!m.highlights) return;
+    const a = document.createElement("a");
+    a.className = "highlights";
+    a.href = m.highlights;
+    a.target = "_blank";
+    a.rel = "noopener";
+    // YouTube's logo shape, with the play triangle cut out so the card shows through.
+    a.innerHTML =
+      '<svg viewBox="0 0 28.57 20" aria-hidden="true"><path fill-rule="evenodd" d="M27.97 3.12A3.58 3.58 0 0 0 25.45.6C23.22 0 14.29 0 14.29 0S5.35 0 3.12.6A3.58 3.58 0 0 0 .6 3.12C0 5.35 0 10 0 10s0 4.65.6 6.88a3.58 3.58 0 0 0 2.52 2.52c2.23.6 11.17.6 11.17.6s8.93 0 11.16-.6a3.58 3.58 0 0 0 2.52-2.52c.6-2.23.6-6.88.6-6.88s0-4.65-.6-6.88zM11.43 14.29L18.85 10l-7.42-4.29z"/></svg>Highlights';
+    el.append(a);
+  }
+
+  // Short round labels for display; the full name still goes to the sheet.
+  const ROUND_SHORT = {
+    "First round": "1R",
+    "Second round": "2R",
+    "Third round": "3R",
+    "Fourth round": "4R",
+    Quarterfinal: "QF",
+    Semifinal: "SF",
+    Final: "F",
+    Exhibition: "Exh.",
+  };
+
   function matchMeta(m) {
-    return [m.event, m.round].filter(Boolean).join(" · ");
+    return [m.event, ROUND_SHORT[m.round] || m.round].filter(Boolean).join(" ");
   }
 
   const GRIP =
@@ -180,7 +233,7 @@
             <button type="button" class="icon-btn" data-act="remove" aria-label="Remove">✕</button>
           </div>`
         }`;
-      li.querySelector(".title").textContent = shortTitle(m);
+      li.querySelector(".title").innerHTML = titleHtml(surname(m.winner), surname(m.loser));
       li.querySelector(".title").title = matchTitle(m);
       li.querySelector(".meta").textContent = matchMeta(m);
       li.querySelector(".score").textContent = m.score || "";
@@ -207,9 +260,9 @@
           <p class="note"></p>
         </div>
         <button type="button" class="btn btn-outline add" data-id="${m.id}"></button>`;
-      li.querySelector(".title").textContent = matchTitle(m);
+      li.querySelector(".title").innerHTML = titleHtml(m.winner, m.loser);
       li.querySelector(".meta").textContent = matchMeta(m);
-      li.querySelector(".score").textContent = m.score || "";
+      setScore(li.querySelector(".score"), m);
       li.querySelector(".note").textContent = m.note || "";
       const btn = li.querySelector(".add");
       if (shared) {
@@ -338,7 +391,7 @@
   let drag = null;
 
   els.pickList.addEventListener("pointerdown", (e) => {
-    if (shared || e.button !== 0 || e.target.closest("button")) return;
+    if (shared || e.button !== 0 || e.target.closest("button, a")) return;
     const li = e.target.closest(".pick");
     if (!li) return;
     const onGrip = !!e.target.closest(".grip");
