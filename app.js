@@ -175,8 +175,20 @@
     el.append(a);
   }
 
+  // Short round labels for display; the full name still goes to the sheet.
+  const ROUND_SHORT = {
+    "First round": "1R",
+    "Second round": "2R",
+    "Third round": "3R",
+    "Fourth round": "4R",
+    Quarterfinal: "QF",
+    Semifinal: "SF",
+    Final: "F",
+    Exhibition: "Exh.",
+  };
+
   function matchMeta(m) {
-    return [m.event, m.round].filter(Boolean).join(" · ");
+    return [m.event, ROUND_SHORT[m.round] || m.round].filter(Boolean).join(" ");
   }
 
   const GRIP =
