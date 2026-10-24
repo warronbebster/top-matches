@@ -419,9 +419,13 @@ body.is-dragging * {
   white-space: nowrap;
 }
 
+/* A fixed offset and thickness, with no gaps cut for descenders, so the
+   underline looks the same on every row whatever its pixel rounding. */
 .score .highlights {
   color: var(--served-primary);
-  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-skip-ink: none;
 }
 
 /* Sized to the cap height and sitting on the baseline, level with the "H". */
