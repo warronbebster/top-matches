@@ -407,6 +407,59 @@ body.is-dragging * {
   overflow-wrap: anywhere;
 }
 
+.score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+}
+
+.score-text,
+.score .highlights {
+  white-space: nowrap;
+}
+
+.score .highlights {
+  font-size: 14px;
+  color: var(--served-primary);
+  text-underline-offset: 2px;
+}
+
+.score .highlights::after {
+  content: " ↗";
+}
+
+.title .vs {
+  font-weight: 400;
+}
+
+/* A base letter with a Latin-1 accent laid over it (see nameHtml in app.js). */
+.dia {
+  position: relative;
+  display: inline-block;
+}
+
+.dia::after {
+  content: attr(data-mark);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dia.acute.cap::after {
+  top: -0.2em;
+}
+
+/* A mirrored cedilla stands in for the ogonek. */
+.dia.ogonek::after {
+  top: 0.04em;
+  left: 0.32em;
+  transform: scaleX(-1);
+}
+
 .meta {
   color: var(--served-secondary);
   font-size: 14px;

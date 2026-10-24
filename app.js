@@ -132,8 +132,47 @@
     return name.trim().split(/\s+/).pop();
   }
 
-  function shortTitle(m) {
-    return `${surname(m.winner)} d. ${surname(m.loser)}`;
+  // The body font (obviously-narrow) only covers Latin-1, so letters like
+  // ą, ń and Ś would fall back to another font. Build them from the base
+  // letter plus a Latin-1 accent drawn on top instead.
+  const MARKS = { "\u0301": ["´", "acute"], "\u0328": ["¸", "ogonek"] };
+
+  function escapeHtml(text) {
+    return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  }
+
+  function nameHtml(name) {
+    return Array.from(name)
+      .map((ch) => {
+        if (ch.charCodeAt(0) < 256) return escapeHtml(ch);
+        const [base, mark, extra] = Array.from(ch.normalize("NFD"));
+        const m = MARKS[mark];
+        if (!m || extra) return escapeHtml(ch);
+        const cap = base !== base.toLowerCase() ? " cap" : "";
+        return `<span class="dia ${m[1]}${cap}" data-mark="${m[0]}">${escapeHtml(base)}</span>`;
+      })
+      .join("");
+  }
+
+  function titleHtml(winner, loser) {
+    return `${nameHtml(winner)} <span class="vs">d.</span> ${nameHtml(loser)}`;
+  }
+
+  // Score, then a link to the match highlights when there is one.
+  function setScore(el, m) {
+    el.textContent = "";
+    const score = document.createElement("span");
+    score.className = "score-text";
+    score.textContent = m.score || "";
+    el.append(score);
+    if (!m.highlights) return;
+    const a = document.createElement("a");
+    a.className = "highlights";
+    a.href = m.highlights;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Highlights";
+    el.append(a);
   }
 
   function matchMeta(m) {
@@ -180,10 +219,10 @@
             <button type="button" class="icon-btn" data-act="remove" aria-label="Remove">✕</button>
           </div>`
         }`;
-      li.querySelector(".title").textContent = shortTitle(m);
+      li.querySelector(".title").innerHTML = titleHtml(surname(m.winner), surname(m.loser));
       li.querySelector(".title").title = matchTitle(m);
       li.querySelector(".meta").textContent = matchMeta(m);
-      li.querySelector(".score").textContent = m.score || "";
+      setScore(li.querySelector(".score"), m);
       els.pickList.appendChild(li);
     });
   }
@@ -207,9 +246,9 @@
           <p class="note"></p>
         </div>
         <button type="button" class="btn btn-outline add" data-id="${m.id}"></button>`;
-      li.querySelector(".title").textContent = matchTitle(m);
+      li.querySelector(".title").innerHTML = titleHtml(m.winner, m.loser);
       li.querySelector(".meta").textContent = matchMeta(m);
-      li.querySelector(".score").textContent = m.score || "";
+      setScore(li.querySelector(".score"), m);
       li.querySelector(".note").textContent = m.note || "";
       const btn = li.querySelector(".add");
       if (shared) {
@@ -338,7 +377,7 @@
   let drag = null;
 
   els.pickList.addEventListener("pointerdown", (e) => {
-    if (shared || e.button !== 0 || e.target.closest("button")) return;
+    if (shared || e.button !== 0 || e.target.closest("button, a")) return;
     const li = e.target.closest(".pick");
     if (!li) return;
     const onGrip = !!e.target.closest(".grip");
