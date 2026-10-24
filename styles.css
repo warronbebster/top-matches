@@ -420,17 +420,18 @@ body.is-dragging * {
 }
 
 .score .highlights {
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   color: var(--served-primary);
   text-underline-offset: 2px;
 }
 
-.score .highlights::after {
-  content: " ↗";
-}
-
-.title .vs {
-  font-weight: 400;
+.highlights svg {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
 }
 
 /* A base letter with a Latin-1 accent laid over it (see nameHtml in app.js). */
@@ -501,7 +502,6 @@ body.is-dragging * {
 .pick-controls {
   flex: none;
   display: flex;
-  gap: 2px;
 }
 
 .icon-btn {

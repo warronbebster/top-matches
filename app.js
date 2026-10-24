@@ -155,7 +155,7 @@
   }
 
   function titleHtml(winner, loser) {
-    return `${nameHtml(winner)} <span class="vs">d.</span> ${nameHtml(loser)}`;
+    return `${nameHtml(winner)} d. ${nameHtml(loser)}`;
   }
 
   // Score, then a link to the match highlights when there is one.
@@ -171,7 +171,8 @@
     a.href = m.highlights;
     a.target = "_blank";
     a.rel = "noopener";
-    a.textContent = "Highlights";
+    a.innerHTML =
+      '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM6 4.5l5.5 3.5L6 11.5z"/></svg>Highlights';
     el.append(a);
   }
 
@@ -234,7 +235,7 @@
       li.querySelector(".title").innerHTML = titleHtml(surname(m.winner), surname(m.loser));
       li.querySelector(".title").title = matchTitle(m);
       li.querySelector(".meta").textContent = matchMeta(m);
-      setScore(li.querySelector(".score"), m);
+      li.querySelector(".score").textContent = m.score || "";
       els.pickList.appendChild(li);
     });
   }
