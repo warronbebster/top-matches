@@ -23,10 +23,13 @@ python3 -m http.server
 
 GitHub Actions publish the site to the `gh-pages` branch:
 
-- Every push to `main` deploys to https://warronbebster.github.io/top-matches/.
-- Every pull request gets its own preview at `https://warronbebster.github.io/top-matches/pr-preview/pr-<number>/`, linked in a comment on the PR and removed when it closes.
+- Every push to `main` deploys to https://served.tennis/2027/. The domain root redirects there.
+- Every pull request gets its own preview at `https://served.tennis/pr-preview/pr-<number>/`, linked in a comment on the PR and removed when it closes.
 
-One-time setup: after the first workflow run creates the `gh-pages` branch, go to **Settings → Pages → Build and deployment → Deploy from a branch → `gh-pages` / `(root)`**.
+One-time setup:
+
+- **Pages:** after the first workflow run creates the `gh-pages` branch, go to **Settings → Pages → Build and deployment → Deploy from a branch → `gh-pages` / `(root)`**, set the custom domain to `served.tennis`, and tick **Enforce HTTPS** once it's offered.
+- **DNS for served.tennis:** `A` records for `@` pointing to 185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153, and `AAAA` records pointing to 2606:50c0:8000::153, 2606:50c0:8001::153, 2606:50c0:8002::153 and 2606:50c0:8003::153. Optionally, add a `CNAME` for `www` pointing to `warronbebster.github.io`.
 
 Previews use the same `config.js`, so a submission from a preview lands in the real sheet.
 
