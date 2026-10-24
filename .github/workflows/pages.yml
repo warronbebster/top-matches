@@ -1,0 +1,40 @@
+# Publishes main to GitHub Pages at https://served.tennis/2027/.
+# The gh-pages root holds only the CNAME and a redirect to /2027/.
+# PR previews live under pr-preview/ on the same branch and are left alone.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble site
+        run: |
+          mkdir -p _site/2027
+          rsync -a --exclude .git --exclude .github --exclude _site --exclude apps-script ./ _site/2027/
+          echo "served.tennis" > _site/CNAME
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8" />
+          <title>Served</title>
+          <meta http-equiv="refresh" content="0; url=/2027/" />
+          <link rel="canonical" href="/2027/" />
+          <a href="/2027/">Top matches</a>
+          HTML
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: _site
+          branch: gh-pages
+          clean-exclude: pr-preview/

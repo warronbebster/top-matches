@@ -2,9 +2,9 @@
 
 A small static site for picking and ranking your top 10 tennis matches of 2026.
 
-- Browse a seeded list of notable ATP and WTA matches and filter by tour.
+- Browse the shortlist of 2026 matches in `matches.js`.
 - Add up to 10 matches, then reorder them by dragging or with the arrow buttons.
-- Add any match that isn't in the list.
+- On phones, tabs switch between the match list and "My top 10".
 - Picks are saved in your browser (localStorage).
 - "Submit" sends your email and ranked list to a Google Sheet. Resubmitting with the same email updates your row instead of adding a new one.
 - "Copy share link" puts your list in the URL so anyone can open it and save it as their own.
@@ -19,7 +19,19 @@ No build step. Open `index.html` directly, or serve the folder:
 python3 -m http.server
 ```
 
-To host it, turn on GitHub Pages for the default branch (Settings → Pages → Deploy from a branch → `main` / root).
+## Hosting and PR previews
+
+GitHub Actions publish the site to the `gh-pages` branch:
+
+- Every push to `main` deploys to https://served.tennis/2027/. The domain root redirects there.
+- Every pull request gets its own preview at `https://served.tennis/pr-preview/pr-<number>/`, linked in a comment on the PR and removed when it closes.
+
+One-time setup:
+
+- **Pages:** after the first workflow run creates the `gh-pages` branch, go to **Settings → Pages → Build and deployment → Deploy from a branch → `gh-pages` / `(root)`**, set the custom domain to `served.tennis`, and tick **Enforce HTTPS** once it's offered.
+- **DNS for served.tennis:** `A` records for `@` pointing to 185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153, and `AAAA` records pointing to 2606:50c0:8000::153, 2606:50c0:8001::153, 2606:50c0:8002::153 and 2606:50c0:8003::153. Optionally, add a `CNAME` for `www` pointing to `warronbebster.github.io`.
+
+Previews use the same `config.js`, so a submission from a preview lands in the real sheet.
 
 ## Turning on submissions (Google Sheets)
 

@@ -1,0 +1,26 @@
+# Publishes each pull request to
+# https://served.tennis/pr-preview/pr-<number>/
+# and comments the link on the PR. The preview is removed when the PR closes.
+name: PR preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: .
+          pages-base-url: served.tennis

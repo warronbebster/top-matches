@@ -27,10 +27,18 @@
           <p class="lede">Pick the ten best matches of the season, put them in order, and send in your list.</p>
         </section>
 
+        <div class="view-tabs" role="tablist" aria-label="View">
+          <button type="button" role="tab" id="tab-catalog" data-tab="catalog" aria-selected="true">Matches</button>
+          <button type="button" role="tab" id="tab-picks" data-tab="picks" aria-selected="false">My top 10 <span class="tab-count" id="tab-count">0</span></button>
+        </div>
+
         <section class="picks" aria-labelledby="picks-title">
           <div class="section-head">
-            <h2 id="picks-title" class="display">Your top 10</h2>
-            <span class="count" id="pick-count">0 / 10</span>
+            <h2 id="picks-title" class="display">My top 10</h2>
+            <div class="head-tools">
+              <button type="button" class="link-btn muted" id="clear-btn">Clear</button>
+              <span class="count" id="pick-count">0 / 10</span>
+            </div>
           </div>
           <div class="card">
             <ol class="pick-list" id="pick-list"></ol>
@@ -48,41 +56,11 @@
 
           <div class="actions">
             <button type="button" class="link-btn" id="share-btn">Copy share link</button>
-            <button type="button" class="link-btn muted" id="clear-btn">Clear</button>
           </div>
         </section>
 
-        <section class="catalog" aria-labelledby="catalog-title">
-          <div class="section-head">
-            <h2 id="catalog-title" class="display">Matches</h2>
-            <div class="tour-tabs" role="group" aria-label="Tour">
-              <button type="button" data-tour="all" aria-pressed="true">All</button>
-              <button type="button" data-tour="ATP" aria-pressed="false">ATP</button>
-              <button type="button" data-tour="WTA" aria-pressed="false">WTA</button>
-            </div>
-          </div>
+        <section class="catalog" aria-label="Matches">
           <ul class="match-list card" id="match-list"></ul>
-
-          <details class="add-custom">
-            <summary>Add a match that isn't listed</summary>
-            <form id="custom-form" class="card">
-              <div class="grid">
-                <label class="field"><span>Winner</span><input name="winner" required /></label>
-                <label class="field"><span>Loser</span><input name="loser" required /></label>
-                <label class="field"><span>Event</span><input name="event" required placeholder="e.g. Shanghai" /></label>
-                <label class="field"><span>Round</span><input name="round" placeholder="e.g. Final" /></label>
-                <label class="field"><span>Score</span><input name="score" placeholder="e.g. 6–4, 3–6, 7–6(5)" /></label>
-                <label class="field"
-                  ><span>Tour</span>
-                  <select name="tour">
-                    <option>ATP</option>
-                    <option>WTA</option>
-                  </select>
-                </label>
-              </div>
-              <button type="submit" class="btn btn-outline">Add match</button>
-            </form>
-          </details>
         </section>
       </div>
     </main>
