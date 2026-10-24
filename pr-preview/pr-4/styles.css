@@ -127,6 +127,9 @@ a {
   top: 24px;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  /* Room inside the scroll box so focus rings and card edges aren't clipped. */
+  margin: -6px;
+  padding: 6px;
 }
 
 @media (max-width: 900px) {
@@ -147,6 +150,8 @@ a {
     position: static;
     max-height: none;
     overflow: visible;
+    margin: 0;
+    padding: 0;
   }
 
   .view-tabs {
@@ -259,6 +264,19 @@ a {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Rows have their own fill, so round the outer ones to match the card. */
+.pick-list > li:first-child,
+.match-list > li:first-child {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.pick-list > li:last-child,
+.match-list > li:last-child {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 .pick-list > li + li,
@@ -621,10 +639,13 @@ a:focus-visible {
 }
 
 .toast {
-  min-height: 1.5em;
-  margin: 8px 0 0;
+  margin: 12px 0 0;
   font-weight: 600;
   color: var(--served-primary);
+}
+
+.toast:empty {
+  display: none;
 }
 
 .toast.error {
@@ -635,6 +656,7 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  margin-top: 16px;
 }
 
 /* ---------- shared-list banner ---------- */
