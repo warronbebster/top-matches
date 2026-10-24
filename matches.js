@@ -144,7 +144,7 @@ window.SEED_MATCHES = [
     winner: "Maja Chwalińska",
     loser: "Diana Shnaider",
     score: "7–6(4), 6–4",
-    note: "The first qualifier ever to reach the Roland Garros final.",
+    note: "The first qualifier in the Open era to reach the Roland Garros final.",
     highlights: "https://www.youtube.com/watch?v=cfHeYAm0GuA",
   },
   {
@@ -204,7 +204,7 @@ window.SEED_MATCHES = [
     winner: "Novak Djokovic",
     loser: "Alexander Zverev",
     score: "4–6, 6–4, 6–4",
-    note: "Djokovic goes 32–0 in Beijing, beating the world No. 1 at 39.",
+    note: "Djokovic goes 32–0 in Beijing, beating the world No. 2 at 39.",
     highlights: "https://www.youtube.com/watch?v=rOCVy6qP724",
   },
   {
