@@ -29,6 +29,11 @@
   box-sizing: border-box;
 }
 
+/* Keep the hidden attribute working on elements that set their own display. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   background: var(--served-cream);
 }

@@ -96,18 +96,12 @@
       banner.className = "banner";
       banner.innerHTML =
         '<span>You’re looking at a shared list.</span>' +
-        '<button type="button" class="btn btn-primary" data-act="adopt">Make it mine</button>' +
-        '<button type="button" class="link-btn" data-act="leave">Back to my list</button>';
+        '<button type="button" class="btn btn-primary" data-act="mine">Make my picks</button>';
+      // Back to your own list, starting on the match list.
       banner.addEventListener("click", (e) => {
-        const act = e.target.dataset.act;
-        if (act === "adopt") {
-          state.picks = shared.picks.slice();
-          saveLocal();
-          leaveShared();
-          showToast("Saved as your list.");
-        } else if (act === "leave") {
-          leaveShared();
-        }
+        if (e.target.dataset.act !== "mine") return;
+        leaveShared();
+        showTab("catalog");
       });
       document.querySelector(".layout").before(banner);
     }

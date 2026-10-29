@@ -7,7 +7,7 @@ A small static site for picking and ranking your top 10 tennis matches of 2026.
 - On phones, tabs switch between the match list and "My top 10".
 - Picks are saved in your browser (localStorage).
 - "Submit" sends your email and ranked list to a Google Sheet. Resubmitting with the same email updates your row instead of adding a new one.
-- "Copy share link" puts your list in the URL so anyone can open it and save it as their own.
+- "Copy share link" puts your list in the URL so anyone can open it, then tap "Make my picks" to start their own list.
 
 The look follows served.bracket.tennis: the Served colors, Magical Night display font, obviously-narrow body font (IBM Plex Sans Condensed where the Adobe Fonts kit doesn't load), and the court illustration.
 
