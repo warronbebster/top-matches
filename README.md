@@ -23,7 +23,7 @@ python3 -m http.server
 
 GitHub Actions publish the site to the `gh-pages` branch:
 
-- Every push to `main` deploys to https://served.tennis/2027/. The domain root redirects there.
+- Every push to `main` deploys to https://served.tennis/2026/. The domain root and the old /2027/ address redirect there.
 - Every pull request gets its own preview at `https://served.tennis/pr-preview/pr-<number>/`, linked in a comment on the PR and removed when it closes.
 
 One-time setup:
