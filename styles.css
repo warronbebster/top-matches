@@ -80,11 +80,33 @@ a {
 
 .hero {
   grid-area: hero;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.hero .lede {
   max-width: 560px;
 }
 
+.logo {
+  display: block;
+  width: 96px;
+  height: auto;
+}
+
+.countdown {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.1;
+  color: var(--served-primary);
+}
+
 .hero h1 {
-  margin: 0 0 16px;
+  text-wrap: balance;
+  margin: 0;
   font-family: var(--font-display);
   font-weight: normal;
   font-size: 56px;
@@ -197,15 +219,20 @@ a {
   }
 
   .tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 22px;
-    padding: 3px 6px 1px;
+    height: 22px;
+    margin-bottom: 3px; /* center on the display font's caps */
+    padding: 0 6px;
     border-radius: 999px;
     background: var(--served-accent);
     color: #000;
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1;
   }
 
   body:not([data-tab="picks"]) .picks,
