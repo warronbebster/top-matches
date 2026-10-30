@@ -80,14 +80,17 @@ a {
 
 .hero {
   grid-area: hero;
+}
+
+.hero .lede {
   max-width: 560px;
 }
 
 .logo {
   display: block;
-  width: 70px;
+  width: 96px;
   height: auto;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .countdown {
@@ -99,6 +102,7 @@ a {
 }
 
 .hero h1 {
+  text-wrap: balance;
   margin: 0 0 16px;
   font-family: var(--font-display);
   font-weight: normal;
