@@ -580,6 +580,15 @@
     render();
   });
 
+  // "X days left to vote", counting down to the start of Dec 2 in the viewer's time zone.
+  function renderCountdown() {
+    const el = $("countdown");
+    const days = Math.ceil((new Date(2026, 11, 2) - new Date()) / 86400000);
+    el.textContent = days > 1 ? `${days} days left to vote` : days === 1 ? "1 day left to vote" : "Voting has closed";
+    el.hidden = false;
+  }
+
+  renderCountdown();
   showTab(shared ? "picks" : "catalog");
   render();
 })();
