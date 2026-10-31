@@ -3,6 +3,7 @@
 
   const MAX_PICKS = 10;
   const STORAGE_KEY = "top-matches-2026";
+  const ORDER_KEY = "top-matches-2026-order";
   const CONFIG = window.TOP_MATCHES_CONFIG || {};
 
   const $ = (id) => document.getElementById(id);
@@ -52,6 +53,30 @@
 
   function byId(id) {
     return window.SEED_MATCHES.find((m) => m.id === id);
+  }
+
+  // Each browser gets its own shuffled order, kept between visits, so the
+  // list's order doesn't nudge everyone toward the same matches.
+  const catalogOrder = loadOrder();
+
+  function loadOrder() {
+    let order = [];
+    try {
+      order = JSON.parse(localStorage.getItem(ORDER_KEY)) || [];
+    } catch (e) {
+      /* start a new order */
+    }
+    order = order.filter((id) => byId(id));
+    // Matches added since this order was saved go in at random spots.
+    window.SEED_MATCHES.forEach((m) => {
+      if (!order.includes(m.id)) order.splice(Math.floor(Math.random() * (order.length + 1)), 0, m.id);
+    });
+    try {
+      localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    } catch (e) {
+      /* ignore */
+    }
+    return order.map(byId);
   }
 
   // ---------- share links ----------
@@ -200,7 +225,7 @@
     els.tabCount.textContent = v.picks.length;
     $("clear-btn").hidden = readOnly || !v.picks.length;
     els.picksEmpty.hidden = v.picks.length > 0;
-    document.querySelector(".actions").hidden = readOnly;
+    $("share-btn").hidden = readOnly;
     els.submitForm.hidden = readOnly;
     els.submitBtn.disabled = !v.picks.length;
     els.submitBtn.textContent = state.submitted ? "Resubmit" : "Submit";
@@ -240,7 +265,7 @@
     const full = state.picks.length >= MAX_PICKS;
     els.matchList.innerHTML = "";
 
-    window.SEED_MATCHES.forEach((m) => {
+    catalogOrder.forEach((m) => {
       const picked = v.picks.includes(m.id);
       const li = document.createElement("li");
       li.className = "match" + (picked ? " picked" : "");
@@ -267,7 +292,7 @@
         btn.setAttribute("aria-label", "Remove from top 10");
         btn.dataset.act = "remove";
       } else {
-        btn.textContent = "Add";
+        btn.textContent = "Pick";
         btn.disabled = full;
         btn.title = full ? "Your top 10 is full" : "";
         btn.dataset.act = "add";
@@ -580,6 +605,15 @@
     render();
   });
 
+  // "X days left to vote", counting down to the start of Dec 2 in the viewer's time zone.
+  function renderCountdown() {
+    const el = $("countdown");
+    const days = Math.ceil((new Date(2026, 11, 2) - new Date()) / 86400000);
+    el.textContent = days > 1 ? `${days} days left to vote` : days === 1 ? "1 day left to vote" : "Voting has closed";
+    el.hidden = false;
+  }
+
+  renderCountdown();
   showTab(shared ? "picks" : "catalog");
   render();
 })();
