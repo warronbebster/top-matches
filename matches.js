@@ -12,7 +12,7 @@ window.SEED_MATCHES = [
     winner: "Iva Jovic",
     loser: "Alexandra Eala",
     score: "7–5, 3–6, 7–5",
-    note: "Over three hours on Ashe; Eala saved a match point before Jovic closed it two games later.",
+    note: "Over three hours on Ashe; Eala saved a match point before Jovic closed it out.",
     highlights: "https://www.youtube.com/watch?v=lH0PXoilPgk",
   },
   {
@@ -24,7 +24,7 @@ window.SEED_MATCHES = [
     winner: "Ben Shelton",
     loser: "Carlos Alcaraz",
     score: "6–7(5), 6–1, 6–3, 1–6, 7–6(7)",
-    note: "The latest finish in US Open history, ending the defending champion's 18-match Grand Slam run.",
+    note: "The latest finish in US Open history, ending Alcaraz's 18-match major streak.",
     highlights: "https://www.youtube.com/watch?v=wYd7I5_tMEs",
   },
   {
@@ -72,7 +72,7 @@ window.SEED_MATCHES = [
     winner: "Alexandra Eala",
     loser: "Iga Świątek",
     score: "7–6(9), 6–2",
-    note: "Eala saved two set points in the tiebreak and knocked out the defending champion.",
+    note: "Eala saved two set points in the tiebreak to knock out the defending champion.",
     highlights: "https://www.youtube.com/watch?v=KUVh-Jflv_Q",
   },
   {
@@ -96,7 +96,7 @@ window.SEED_MATCHES = [
     winner: "Frances Tiafoe",
     loser: "Alex Michelsen",
     score: "5–7, 3–6, 7–5, 6–3, 7–6(6)",
-    note: "Back from two sets and 0–3 in the fifth down to reach his third US Open semifinal.",
+    note: "From two sets and 0–3 down in the fifth to reach his third US Open semifinal.",
     highlights: "https://www.youtube.com/watch?v=J1ljGoL7be0",
   },
   {
@@ -120,7 +120,7 @@ window.SEED_MATCHES = [
     winner: "Jack Draper",
     loser: "Novak Djokovic",
     score: "4–6, 6–4, 7–6(5)",
-    note: "The defending champion wins a final-set tiebreak after Djokovic broke back at 5–4.",
+    note: "Defending champion wins a final-set tiebreak after Djokovic broke back at 5–4.",
     highlights: "https://www.youtube.com/watch?v=-pSIqoqePeg",
   },
   {
@@ -156,7 +156,7 @@ window.SEED_MATCHES = [
     winner: "Jannik Sinner",
     loser: "Daniil Medvedev",
     score: "6–2, 5–7, 6–4",
-    note: "Finished after a rain suspension, sending Sinner to a sixth straight Masters 1000 final.",
+    note: "Finished after a rain delay, sending Sinner to a sixth straight Masters final.",
     highlights: "https://www.youtube.com/watch?v=7B9y5ctPyRo",
   },
   {
@@ -180,7 +180,7 @@ window.SEED_MATCHES = [
     winner: "Matteo Arnaldi",
     loser: "Frances Tiafoe",
     score: "7–6(5), 6–7(5), 3–6, 7–6(3), 6–4",
-    note: "5 hours 26 minutes, back from two breaks down in the fourth to reach his first major quarterfinal.",
+    note: "5 hours 26 minutes, from two breaks down in the fourth to a first major QF.",
     highlights: "https://www.youtube.com/watch?v=kxhSEAEmNAQ",
   },
   {
@@ -216,7 +216,7 @@ window.SEED_MATCHES = [
     winner: "Zheng Qinwen",
     loser: "Madison Keys",
     score: "1–6, 7–6(3), 7–5",
-    note: "Back from 0–5 and a match point down in the third, winning the last seven games.",
+    note: "From 0–5 and a match point down in the third, winning the last seven games.",
     highlights: "https://www.youtube.com/watch?v=PiuDtMWKU2g",
   },
   {
@@ -240,7 +240,7 @@ window.SEED_MATCHES = [
     winner: "Hailey Baptiste",
     loser: "Aryna Sabalenka",
     score: "2–6, 6–2, 7–6(6)",
-    note: "Saved six match points for her first top-5 win, ending Sabalenka's 15-match streak.",
+    note: "Saved six match points for her first top-5 win, ending Sabalenka's 15-match run.",
     highlights: "https://www.youtube.com/watch?v=5dJSS-Vb-Ts",
   },
   {
@@ -252,7 +252,7 @@ window.SEED_MATCHES = [
     winner: "Matteo Berrettini",
     loser: "Stan Wawrinka",
     score: "6–7(7), 7–6(16), 7–6(7), 7–6(5)",
-    note: "Four tiebreak sets, including 18–16 in the second, in Wawrinka's final Wimbledon.",
+    note: "Four tiebreak sets, 18–16 in the second, in Wawrinka's final Wimbledon.",
     highlights: "https://www.youtube.com/watch?v=8AaMeFTeskY",
   },
 ];

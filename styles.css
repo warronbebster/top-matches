@@ -149,7 +149,7 @@ a {
   grid-template-areas:
     "hero picks"
     "catalog picks";
-  gap: 32px 48px;
+  gap: 12px 48px;
 }
 
 .view-tabs {
@@ -660,8 +660,11 @@ body.is-dragging * {
 button.add {
   flex: none;
   min-width: 64px;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: 18px;
-  padding: 9px 12px 6px;
+  letter-spacing: 0;
+  padding: 8px 12px;
 }
 
 button.add.ranked {
