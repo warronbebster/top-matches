@@ -267,7 +267,7 @@
         btn.setAttribute("aria-label", "Remove from top 10");
         btn.dataset.act = "remove";
       } else {
-        btn.textContent = "Add";
+        btn.textContent = "Pick";
         btn.disabled = full;
         btn.title = full ? "Your top 10 is full" : "";
         btn.dataset.act = "add";
