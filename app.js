@@ -3,6 +3,7 @@
 
   const MAX_PICKS = 10;
   const STORAGE_KEY = "top-matches-2026";
+  const ORDER_KEY = "top-matches-2026-order";
   const CONFIG = window.TOP_MATCHES_CONFIG || {};
 
   const $ = (id) => document.getElementById(id);
@@ -52,6 +53,30 @@
 
   function byId(id) {
     return window.SEED_MATCHES.find((m) => m.id === id);
+  }
+
+  // Each browser gets its own shuffled order, kept between visits, so the
+  // list's order doesn't nudge everyone toward the same matches.
+  const catalogOrder = loadOrder();
+
+  function loadOrder() {
+    let order = [];
+    try {
+      order = JSON.parse(localStorage.getItem(ORDER_KEY)) || [];
+    } catch (e) {
+      /* start a new order */
+    }
+    order = order.filter((id) => byId(id));
+    // Matches added since this order was saved go in at random spots.
+    window.SEED_MATCHES.forEach((m) => {
+      if (!order.includes(m.id)) order.splice(Math.floor(Math.random() * (order.length + 1)), 0, m.id);
+    });
+    try {
+      localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    } catch (e) {
+      /* ignore */
+    }
+    return order.map(byId);
   }
 
   // ---------- share links ----------
@@ -240,7 +265,7 @@
     const full = state.picks.length >= MAX_PICKS;
     els.matchList.innerHTML = "";
 
-    window.SEED_MATCHES.forEach((m) => {
+    catalogOrder.forEach((m) => {
       const picked = v.picks.includes(m.id);
       const li = document.createElement("li");
       li.className = "match" + (picked ? " picked" : "");
