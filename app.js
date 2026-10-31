@@ -200,7 +200,7 @@
     els.tabCount.textContent = v.picks.length;
     $("clear-btn").hidden = readOnly || !v.picks.length;
     els.picksEmpty.hidden = v.picks.length > 0;
-    document.querySelector(".actions").hidden = readOnly;
+    $("share-btn").hidden = readOnly;
     els.submitForm.hidden = readOnly;
     els.submitBtn.disabled = !v.picks.length;
     els.submitBtn.textContent = state.submitted ? "Resubmit" : "Submit";

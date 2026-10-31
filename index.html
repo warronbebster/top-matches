@@ -23,7 +23,10 @@
     <main class="page">
       <div class="layout">
         <section class="hero">
-          <img class="logo" src="assets/served-logo.png" alt="Served with Andy Roddick" width="96" height="33" />
+          <a class="logo" href="https://servedpodcast.com" aria-label="Served with Andy Roddick">
+            <img src="assets/served-logo.png" alt="" width="96" height="33" />
+            <img class="logo-hover" src="assets/served-logo-reversed.png" alt="" width="96" height="33" />
+          </a>
           <h1>Best Matches of 2026</h1>
           <p class="countdown" id="countdown" hidden></p>
           <p class="lede">Pick the ten best matches of the season, put them in order, and send in your list.</p>
@@ -38,7 +41,8 @@
           <div class="section-head">
             <h2 id="picks-title" class="display">My top 10</h2>
             <div class="head-tools">
-              <button type="button" class="link-btn muted" id="clear-btn">Clear</button>
+              <button type="button" class="link-btn" id="share-btn">Copy share link</button>
+              <button type="button" class="link-btn" id="clear-btn">Clear</button>
               <span class="count" id="pick-count">0 / 10</span>
             </div>
           </div>
@@ -55,10 +59,6 @@
             <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
           </form>
           <p class="toast" id="toast" role="status" aria-live="polite"></p>
-
-          <div class="actions">
-            <button type="button" class="link-btn" id="share-btn">Copy share link</button>
-          </div>
         </section>
 
         <section class="catalog" aria-label="Matches">

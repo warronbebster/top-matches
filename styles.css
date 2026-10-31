@@ -41,10 +41,12 @@ html {
 body {
   margin: 0;
   background-color: var(--served-cream);
-  background-image: linear-gradient(90deg, var(--served-cream) 20%, rgba(245, 238, 228, 0) 100%),
+  /* The first layer fades the court art to 50%. */
+  background-image: linear-gradient(rgba(245, 238, 228, 0.5), rgba(245, 238, 228, 0.5)),
+    linear-gradient(90deg, var(--served-cream) 20%, rgba(245, 238, 228, 0) 100%),
     linear-gradient(0deg, var(--served-cream) 80%, rgba(245, 238, 228, 0) 100%), url("assets/wipe.webp");
-  background-size: auto, auto, 100% auto;
-  background-position: 0 0, 0 0, top center;
+  background-size: auto, auto, auto, 100% auto;
+  background-position: 0 0, 0 0, 0 0, top center;
   background-repeat: no-repeat;
   color: var(--text);
   font-family: var(--font-sans);
@@ -83,7 +85,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 6px;
 }
 
 .hero .lede {
@@ -91,9 +93,24 @@ a {
 }
 
 .logo {
-  display: block;
+  display: grid;
   width: 96px;
+}
+
+/* Both images share one cell; hover swaps to the reversed one. */
+.logo img {
+  grid-area: 1 / 1;
+  width: 100%;
   height: auto;
+}
+
+.logo .logo-hover,
+.logo:hover img:first-child {
+  visibility: hidden;
+}
+
+.logo:hover .logo-hover {
+  visibility: visible;
 }
 
 .countdown {
@@ -275,6 +292,10 @@ a {
   font-size: 36px;
   line-height: 1.1;
   color: var(--served-primary);
+}
+
+#picks-title {
+  text-shadow: 2px 2px 0 var(--served-accent);
 }
 
 .count {
@@ -667,10 +688,6 @@ button.add.ranked:hover {
   text-decoration: none;
 }
 
-.link-btn.muted {
-  color: var(--muted);
-}
-
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
@@ -738,13 +755,6 @@ a:focus-visible {
 
 .toast.error {
   color: #b42318;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 16px;
 }
 
 /* ---------- shared-list banner ---------- */
