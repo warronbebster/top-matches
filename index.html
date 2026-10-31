@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Top Matches 2026</title>
+    <title>Best Matches of 2026</title>
     <meta name="description" content="Pick and rank your top 10 tennis matches of 2026." />
     <link
       rel="icon"
@@ -23,7 +23,11 @@
     <main class="page">
       <div class="layout">
         <section class="hero">
-          <h1>2026 Matches<br />of the Year</h1>
+          <a class="logo" href="https://servedpodcast.com" aria-label="Served with Andy Roddick">
+            <img src="assets/served-logo.png" alt="" width="116" height="40" />
+            <img class="logo-hover" src="assets/served-logo-reversed.png" alt="" width="116" height="40" />
+          </a>
+          <h1>Best Matches of 2026</h1>
           <p class="lede">Pick the ten best matches of the season, put them in order, and send in your list.</p>
         </section>
 
@@ -36,13 +40,14 @@
           <div class="section-head">
             <h2 id="picks-title" class="display">My top 10</h2>
             <div class="head-tools">
-              <button type="button" class="link-btn muted" id="clear-btn">Clear</button>
+              <button type="button" class="link-btn" id="share-btn">Copy share link</button>
+              <button type="button" class="link-btn" id="clear-btn">Clear</button>
               <span class="count" id="pick-count">0 / 10</span>
             </div>
           </div>
           <div class="card">
             <ol class="pick-list" id="pick-list"></ol>
-            <p class="empty" id="picks-empty">Nothing picked yet. Add matches from the list.</p>
+            <p class="empty" id="picks-empty">Start picking your top 10!</p>
           </div>
 
           <form class="submit-form" id="submit-form">
@@ -52,11 +57,8 @@
             </label>
             <button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
           </form>
+          <p class="countdown" id="countdown" hidden></p>
           <p class="toast" id="toast" role="status" aria-live="polite"></p>
-
-          <div class="actions">
-            <button type="button" class="link-btn" id="share-btn">Copy share link</button>
-          </div>
         </section>
 
         <section class="catalog" aria-label="Matches">
