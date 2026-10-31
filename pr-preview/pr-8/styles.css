@@ -86,6 +86,7 @@ a {
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
+  container-type: inline-size;
 }
 
 .hero .lede {
@@ -121,21 +122,16 @@ a {
   color: var(--served-primary);
 }
 
+/* Sized so the headline fills the hero on one line; the text is ~9.6em wide. */
 .hero h1 {
-  text-wrap: balance;
   margin: 0;
+  white-space: nowrap;
   font-family: var(--font-display);
   font-weight: normal;
-  font-size: 56px;
+  font-size: 10.3cqi;
   line-height: 1;
   color: var(--served-primary);
   text-shadow: 2px 2px 0 var(--served-accent);
-}
-
-@media (max-width: 640px) {
-  .hero h1 {
-    font-size: 44px;
-  }
 }
 
 .lede {
