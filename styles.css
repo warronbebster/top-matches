@@ -134,6 +134,10 @@ a {
   text-shadow: 2px 2px 0 var(--served-accent);
 }
 
+.lede p {
+  margin: 0;
+}
+
 .lede {
   margin: 0;
   font-size: 18px;
