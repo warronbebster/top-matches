@@ -124,18 +124,6 @@ window.SEED_MATCHES = [
     highlights: "https://www.youtube.com/watch?v=-pSIqoqePeg",
   },
   {
-    id: "uso-exh-federer-roddick",
-    tour: "EXH",
-    event: "US Open",
-    round: "Exhibition",
-    month: "Aug",
-    winner: "Roger Federer",
-    loser: "Andy Roddick",
-    score: "6–3",
-    note: "A one-set exhibition on Ashe as Federer, 45, returned to New York.",
-    highlights: "https://www.youtube.com/watch?v=fPAC0c74oSA",
-  },
-  {
     id: "rg-wsf-chwalinska-shnaider",
     tour: "WTA",
     event: "Roland Garros",
