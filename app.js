@@ -545,9 +545,27 @@
 
   // ---------- submit ----------
 
+  // Returns the email in one canonical form, or null if it doesn't look real.
+  // Plus tags (name+anything@) are dropped everywhere, and Gmail ignores dots,
+  // so variants of one inbox all count as the same voter.
+  function canonicalEmail(raw) {
+    const email = raw.trim().toLowerCase();
+    const m = /^([a-z0-9!#$%&'*+/=?^_`{|}~.-]+)@((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+([a-z]{2,63}))$/.exec(email);
+    if (!m || !window.EMAIL_TLDS.has(m[3])) return null;
+    let local = m[1].split("+")[0];
+    let domain = m[2];
+    if (domain === "gmail.com" || domain === "googlemail.com") {
+      local = local.replace(/\./g, "");
+      domain = "gmail.com";
+    }
+    if (!local || local.startsWith(".") || local.endsWith(".") || local.includes("..")) return null;
+    return local + "@" + domain;
+  }
+
   els.submitEmail.value = state.email;
   els.submitEmail.addEventListener("input", () => {
     state.email = els.submitEmail.value;
+    els.submitEmail.setCustomValidity("");
     saveLocal();
   });
 
@@ -558,8 +576,15 @@
       return showToast("Submissions aren\u2019t switched on yet.", { error: true, sticky: true });
     }
 
+    const email = canonicalEmail(els.submitEmail.value);
+    if (!email) {
+      els.submitEmail.setCustomValidity("Enter a real email address.");
+      els.submitEmail.reportValidity();
+      return showToast("That email doesn\u2019t look right. Check it and try again.", { error: true });
+    }
+
     const payload = {
-      email: els.submitEmail.value.trim().toLowerCase(),
+      email,
       picks: state.picks.map((id, i) => {
         const m = byId(id);
         return {
